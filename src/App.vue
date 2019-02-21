@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img alt="Vue logo" src="./assets/logo.jpg">
+    <HelloWorld msg="This is Giulio's personal website, a work in progress :)"/>
+    <a href="https://github.com/ciuffi">Github: Ciuffi </a>
   </div>
 </template>
 
@@ -24,5 +25,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+a {
+  font-size: 24px;
 }
 </style>
