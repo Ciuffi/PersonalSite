@@ -1,5 +1,7 @@
 export default {
-  buildDir: 'docs',
+  generate: {
+    dir: 'docs'
+  },
   mode: 'spa',
   /*
    ** Headers of the page
