@@ -1,0 +1,16 @@
+<template>
+  <Nuxt />
+</template>
+
+<style>
+html {
+  background-color: #181a1b;
+}
+p,
+h1,
+h2,
+h3,
+h4 {
+  color: white;
+}
+</style>
