@@ -3,6 +3,8 @@
     <img alt="Vue logo" src="./assets/logo.jpg">
     <HelloWorld msg="This is Giulio's personal website, a work in progress :)"/>
     <a href="https://github.com/ciuffi">Github: Ciuffi </a>
+    <br>
+    <a href="https://twitter.com/ciuffi">Contact me on Twitter: @Ciuffi</a>
   </div>
 </template>
 
