@@ -1,33 +1,24 @@
 <template>
   <section class="main">
-    <img alt="Vue logo" src="~/assets/logo.jpg" />
-    <h1>This is Giulio's personal website, a work in progress :)</h1>
-    <a href="https://github.com/ciuffi">Github: Ciuffi </a>
-    <br />
-    <a href="https://twitter.com/ciuffi">Contact me on Twitter: @Ciuffi</a>
-    >
+    <intro />
+    <contact />
   </section>
 </template>
 
 <script>
+import Intro from '~/components/Intro'
+import Contact from '~/components/Contact'
 export default {
-  name: 'HomePage'
+  name: 'HomePage',
+  components: { Intro, Contact }
 }
 </script>
 
 <style scoped>
-.main {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+#main {
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
-h1 {
-  font-size: 36px;
-  color: white;
-}
+
 a {
   font-size: 24px;
 }
