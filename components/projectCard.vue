@@ -51,7 +51,6 @@ export default {
       return require(`../assets/${this.project.image}`)
     },
     langImage() {
-      console.log(this.project.limage)
       return require(`../assets/${this.project.limage}`)
     }
   }
