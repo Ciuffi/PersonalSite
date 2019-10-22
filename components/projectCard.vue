@@ -1,5 +1,19 @@
 <template>
   <div class="card">
+    <header
+      :style="project.bcolor ? `background-color: ${project.bcolor};` : ''"
+      class="card-header"
+    >
+      <span class="header-image">
+        <img :src="langImage" alt="language image" />
+      </span>
+      <p
+        :style="project.color ? `color: ${project.color};` : ''"
+        :class="`title is-5 ${project.lang ? 'language' : ''}`"
+      >
+        {{ project.lang || '' }}
+      </p>
+    </header>
     <div class="card-image">
       <figure class="image is-4by3">
         <img class="mainImage" :src="image" :alt="`${project.title} image`" />
@@ -12,7 +26,9 @@
         </div>
       </div>
       <div class="content">
-        {{ project.description }}
+        <span v-line-clamp="2">
+          {{ project.description }}
+        </span>
         <br />
         <a :href="`projects/${project.name}`">Read More</a>
       </div>
@@ -33,18 +49,29 @@ export default {
   computed: {
     image() {
       return require(`../assets/${this.project.image}`)
+    },
+    langImage() {
+      console.log(this.project.limage)
+      return require(`../assets/${this.project.limage}`)
     }
   }
 }
 </script>
 <style scoped>
+.header-image {
+  margin: 1% 0;
+  width: 5%;
+}
+.language {
+  margin: 1% 1%;
+}
 .mainImage {
   object-fit: cover;
 }
 .card {
   margin: auto;
-  min-width: 40vw;
-  max-width: 60vw;
+  min-width: 30vw;
+  max-width: 35vw;
   transition-duration: 0.5s;
 }
 .card:hover {
@@ -52,7 +79,13 @@ export default {
 }
 @media only screen and (max-width: 768px) {
   .card {
+    min-width: 100%;
+    max-width: 100%;
     width: 100%;
+    margin-bottom: 8%;
+  }
+  .card:hover {
+    transform: none;
   }
 }
 </style>

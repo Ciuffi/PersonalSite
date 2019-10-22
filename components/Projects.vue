@@ -1,5 +1,5 @@
 <template>
-  <section v-if="projects.length !== 0" class="projects">
+  <section v-if="projects.length !== 0" id="projects" class="projects">
     <p class="title is-2 header">Projects</p>
     <div id="cards">
       <card
@@ -43,6 +43,7 @@ export default {
   width: 80%;
   margin: auto;
   margin-top: 4%;
+  display: flex;
 }
 
 .projects {
@@ -54,6 +55,7 @@ export default {
 @media only screen and (max-width: 768px) {
   #cards {
     width: 90%;
+    display: inline-block;
   }
 }
 </style>
