@@ -23,7 +23,6 @@ export default {
       }
     })
     const attributes = projects.map((project) => {
-      console.log(project)
       project.md.attributes.name = project.name
       return project.md.attributes
     })
@@ -38,10 +37,6 @@ export default {
 #main {
   text-align: center;
 }
-#main > section {
-  margin: 5%;
-}
-
 a {
   font-size: 24px;
 }
