@@ -67,6 +67,7 @@ export default {
    ** Build configuration
    */
   build: {
+    vendor: ['prismjs'],
     /*
      ** You can extend webpack config here
      */

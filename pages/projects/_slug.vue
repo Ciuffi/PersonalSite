@@ -6,8 +6,8 @@
         {{ project.attributes.title }}
       </div>
     </section>
-    <section>
-      <div class="content" v-html="project.html"></div>
+    <section class="markDown">
+      <div class="content customColours" v-html="project.html"></div>
     </section>
   </div>
 </template>
@@ -32,12 +32,26 @@ export default {
 }
 </script>
 <style>
-.content > h1,
+.content {
+  width: 90%;
+  margin: 3% auto;
+}
+code,
+pre {
+  background-color: #2d2d2d;
+  font-weight: bold;
+  color: #eeee;
+}
+.customColours > h1,
+.customColours > h2,
 p,
 h2,
 h3,
 h4,
-h5 {
+li {
+  color: #eeee;
+}
+strong {
   color: white;
 }
 </style>
@@ -50,7 +64,7 @@ h5 {
   margin: auto;
   height: 60vh;
   position: relative;
-  margin-bottom: 5%;
+  margin-bottom: 1%;
 }
 h1 {
   color: white;
@@ -76,5 +90,11 @@ h1 {
   padding: 0 2%;
   line-height: 10vh;
   color: white;
+}
+.markDown {
+  border: 2px solid white;
+  border-radius: 25px;
+  width: 90%;
+  margin: auto;
 }
 </style>

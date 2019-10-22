@@ -1,5 +1,5 @@
 <template>
-  <section class="projects">
+  <section v-if="projects.length !== 0" class="projects">
     <p class="title is-2 header">Projects</p>
     <div id="cards">
       <card

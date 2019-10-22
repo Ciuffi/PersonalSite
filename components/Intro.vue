@@ -59,8 +59,7 @@
   border: 1px solid inherit;
   border-radius: 50px;
   width: 60vw;
-  padding: 0 2%;
-  line-height: 10vh;
+  padding: 2% 4%;
   color: white;
   animation: 1s ease-out 0s 1 slideInFromBottom;
 }
@@ -88,7 +87,6 @@
     font-size: 1.5em;
     left: 50%;
     transform: translateX(-50%);
-    line-height: 2em;
     padding: 5%;
   }
 }

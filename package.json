@@ -15,7 +15,9 @@
     "@nuxtjs/pwa": "^3.0.0-0",
     "frontmatter-markdown-loader": "^2.3.0",
     "nuxt": "^2.0.0",
-    "nuxt-buefy": "^0.3.2"
+    "nuxt-buefy": "^0.3.2",
+    "prismjs": "^1.17.1",
+    "vue-prism-component": "^1.1.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",
