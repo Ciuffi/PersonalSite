@@ -17,7 +17,7 @@
       </a>
       <div class="navbar-item">
         <div class="buttons">
-          <a class="is-primary" @click="scrollOrLink('#contact')">
+          <a class="button is-success" @click="scrollOrLink('#contact')">
             <strong>Contact</strong>
           </a>
         </div>
