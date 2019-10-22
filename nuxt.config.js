@@ -1,6 +1,23 @@
+import path from 'path'
+import glob from 'glob'
+const dynamicRoutes = getDynamicPaths({
+  '/projects': 'projects/*.md'
+})
+/* https://github.com/jake-101/bael-template */
+function getDynamicPaths(urlFilepathTable) {
+  return [].concat(
+    ...Object.keys(urlFilepathTable).map((url) => {
+      const filepathGlob = urlFilepathTable[url]
+      return glob
+        .sync(filepathGlob, { cwd: 'content' })
+        .map((filepath) => `${url}/${path.basename(filepath, '.md')}`)
+    })
+  )
+}
 export default {
   generate: {
-    dir: 'docs'
+    dir: 'docs',
+    routes: dynamicRoutes
   },
   mode: 'spa',
   /*
@@ -53,6 +70,12 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.md$/,
+        include: path.resolve(__dirname, 'content'),
+        loader: 'frontmatter-markdown-loader'
+      })
+    }
   }
 }
