@@ -65,8 +65,10 @@
 }
 #github {
   background-color: #d3d3d3;
+  transition-duration: 0.5s;
 }
 #twitter {
+  transition-duration: 0.5s;
   background-color: #1da1f2;
 }
 #twitterLink {
@@ -76,14 +78,28 @@
   color: black;
 }
 #github > img {
-  margin-top: 10%;
+  margin-top: 12%;
   width: 71.2px;
   height: 71.2px;
 }
 #twitter > img {
-  margin-top: 0%;
+  margin-top: 2%;
   margin-bottom: -15%;
   width: 100px;
   height: 100px;
+}
+#github:hover {
+  transform: translateY(-20px);
+}
+#twitter:hover {
+  transform: translateY(-20px);
+}
+@media only screen and (max-width: 768px) {
+  #github:hover {
+    transform: none;
+  }
+  #twitter:hover {
+    transform: none;
+  }
 }
 </style>
