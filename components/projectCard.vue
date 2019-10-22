@@ -43,7 +43,8 @@ export default {
 }
 .card {
   margin: auto;
-  width: 30vw;
+  min-width: 40vw;
+  max-width: 60vw;
   transition-duration: 0.5s;
 }
 .card:hover {
