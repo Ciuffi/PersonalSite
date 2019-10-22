@@ -1,5 +1,6 @@
 <template>
   <section id="contact">
+    <p class="title is-2 header">Contact</p>
     <a id="twitterLink" href="https://twitter.com/ciuffi" target="_blank">
       <div id="twitter">
         <img
@@ -42,6 +43,9 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+.header {
+  color: white;
 }
 #contact {
   width: 100%;

@@ -26,6 +26,16 @@ export default {
 }
 </script>
 <style scoped>
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(25%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 .header {
   color: white;
 }
@@ -39,6 +49,7 @@ export default {
   text-align: center;
   margin-top: 2%;
   margin-bottom: 2%;
+  animation: 1s ease-out slideInFromBottom;
 }
 @media only screen and (max-width: 768px) {
   #cards {
