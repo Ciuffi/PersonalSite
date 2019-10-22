@@ -30,7 +30,7 @@
           {{ project.description }}
         </span>
         <br />
-        <a :href="`projects/${project.name}`">Read More</a>
+        <nuxt-link :to="`/projects/${project.name}`">Read More</nuxt-link>
       </div>
     </div>
   </div>

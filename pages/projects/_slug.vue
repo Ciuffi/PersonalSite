@@ -54,6 +54,12 @@ li {
 strong {
   color: white;
 }
+@media only screen and (max-width: 768px) {
+  .content {
+    width: 95%;
+    margin: auto;
+  }
+}
 </style>
 <style scoped>
 #project {
@@ -96,5 +102,10 @@ h1 {
   border-radius: 25px;
   width: 90%;
   margin: auto;
+}
+@media only screen and (max-width: 768px) {
+  .markDown {
+    width: 100%;
+  }
 }
 </style>

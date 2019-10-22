@@ -75,8 +75,8 @@
     }
   }
   #intro {
-    margin-top: 0%;
     width: 100%;
+    margin-top: 10%;
   }
   #Background > img {
     object-fit: cover;
