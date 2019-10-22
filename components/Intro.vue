@@ -17,7 +17,7 @@
   margin: auto;
   height: 75vh;
   position: relative;
-  margin-top: 2%;
+  margin-top: 4%;
 }
 
 @keyframes slideInFromTop {

@@ -33,6 +33,20 @@ export default {
 }
 </script>
 
+<style>
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#navbar {
+  animation: 1s ease-out opacity;
+}
+</style>
+
 <style scoped>
 #main {
   text-align: center;
