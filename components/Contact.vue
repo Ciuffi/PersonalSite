@@ -71,9 +71,15 @@
 #githubLink {
   color: black;
 }
-.contactImage {
+#github > img {
   margin-top: 10%;
   width: 71.2px;
   height: 71.2px;
+}
+#twitter > img {
+  margin-top: 0%;
+  margin-bottom: -15%;
+  width: 100px;
+  height: 100px;
 }
 </style>
