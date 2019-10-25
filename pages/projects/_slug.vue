@@ -71,6 +71,7 @@ strong {
   height: 60vh;
   position: relative;
   margin-bottom: 1%;
+  margin-top: 5%;
 }
 h1 {
   color: white;
@@ -104,6 +105,9 @@ h1 {
   margin: auto;
 }
 @media only screen and (max-width: 768px) {
+  #Background > img {
+    border-radius: 0;
+  }
   .markDown {
     width: 100%;
   }

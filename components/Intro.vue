@@ -17,7 +17,7 @@
   margin: auto;
   height: 75vh;
   position: relative;
-  margin-top: 4%;
+  margin-top: 5%;
 }
 
 @keyframes slideInFromTop {
@@ -45,7 +45,7 @@
   height: 75vh;
   object-fit: cover;
   border: 2px solid inherit;
-  border-radius: 50px;
+  border-radius: 10px;
   animation: 1s ease-out 0s 1 slideInFromTop;
 }
 #textDiv {
