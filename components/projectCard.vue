@@ -62,7 +62,7 @@ export default {
   width: 5%;
 }
 .language {
-  margin: 1% 1%;
+  margin: auto 0;
 }
 .mainImage {
   object-fit: cover;
