@@ -13,6 +13,9 @@
         </a>
       </div>
       <div class="navbar-end">
+        <a class="navbar-item" @click="scrollOrLink('#experiences')">
+          Experiences
+        </a>
         <a class="navbar-item" @click="scrollOrLink('#projects')">
           Projects
         </a>
@@ -37,6 +40,9 @@
       </div>
       <div class="end">
         <div class="navbar-item">
+          <a class="navitem" @click="scrollOrLink('#experiences')">
+            Experiences
+          </a>
           <a class="navitem" @click="scrollOrLink('#projects')">
             Projects
           </a>

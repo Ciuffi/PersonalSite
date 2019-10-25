@@ -50,4 +50,14 @@ export default {
 .right:hover {
   transform: translateX(-30px);
 }
+@media only screen and (max-width: 768px) {
+  .message {
+    min-width: 80%;
+    max-width: 80%;
+    margin: 5% auto;
+  }
+  .message {
+    transform: none;
+  }
+}
 </style>

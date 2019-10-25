@@ -1,5 +1,5 @@
 <template>
-  <section v-if="experiences.length !== 0" class="experiences">
+  <section v-if="experiences.length !== 0" id="experiences" class="experiences">
     <p class="title is-2 header">Experiences</p>
     <experienceCard
       v-for="(experience, index) in experiences"
