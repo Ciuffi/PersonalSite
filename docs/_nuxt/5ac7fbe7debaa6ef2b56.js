@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{178:function(o,t){o.exports={attributes:{title:"AbCellera",description:"I did lots of stuffs at abcellera",color:"black",bcolor:"rgb(0, 224, 162)"},html:""}}}]);

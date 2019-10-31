@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{193:function(e,n){e.exports={attributes:{title:"Software Engineering Intern @ Ensemble Systems",description:"I did a bunch of stuff at ensemble",bcolor:"rgb(24, 199, 200)",color:"white"},html:"<p>bla bla</p>\n"}}}]);

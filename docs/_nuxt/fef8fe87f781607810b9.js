@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[9],{179:function(e,t){e.exports={attributes:{title:"Ensemble Systems",description:"I did a bunch of stuff at ensemble",bcolor:"rgb(24, 199, 200)",color:"white"},html:"<p>bla bla</p>\n"}}}]);
