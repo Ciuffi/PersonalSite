@@ -30,27 +30,21 @@
     </nav>
     <nav id="navbar" class="is-dark mobileNavbar">
       <div class="start">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="navitem" @click="scrollOrLink('#intro')">
-              Home
-            </a>
-          </div>
-        </div>
+        <a class="navitem" @click="scrollOrLink('#intro')">
+          Home
+        </a>
       </div>
       <div class="end">
-        <div class="navbar-item">
-          <a class="navitem" @click="scrollOrLink('#experiences')">
-            Experiences
-          </a>
-          <a class="navitem" @click="scrollOrLink('#projects')">
-            Projects
-          </a>
-          <span class="vl"></span>
-          <a class="navitem" @click="scrollOrLink('#contact')">
-            Contact
-          </a>
-        </div>
+        <a class="navitem" @click="scrollOrLink('#experiences')">
+          Experiences
+        </a>
+        <a class="navitem" @click="scrollOrLink('#projects')">
+          Projects
+        </a>
+        <span class="vl"></span>
+        <a class="navitem" @click="scrollOrLink('#contact')">
+          Contact
+        </a>
       </div>
     </nav>
   </div>
@@ -78,17 +72,19 @@ export default {
   margin-right: 1%;
 }
 .start {
-  width: 50%;
-  margin-right: 0;
+  display: inline-block;
+  width: 10%;
+  margin: auto 2%;
 }
 .end {
   display: inline-block;
-  width: 60%;
+  width: 90%;
   text-align: right;
-  line-height: 12px;
+  margin: auto;
 }
 .navitem {
-  margin: 2% 2%;
+  height: 100%;
+  margin: auto 2%;
   color: white;
   user-select: none;
 }
