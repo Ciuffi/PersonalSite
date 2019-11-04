@@ -31,7 +31,13 @@ export default {
 .experiences {
   text-align: center;
   margin-top: 2%;
-  margin-bottom: 2%;
+  margin-bottom: 5%;
   animation: 1s ease-out slideInFromBottom;
+}
+#cards {
+  display: grid;
+  grid-column-gap: 2%;
+  grid-row-gap: 10%;
+  grid-template-columns: 1fr 1fr;
 }
 </style>

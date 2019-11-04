@@ -1,15 +1,21 @@
 <template>
-  <article :class="`message ${index === 1 ? 'left' : 'right'}`">
-    <div
-      :style="`background-color: ${experience.bcolor};`"
-      class="message-header"
-    >
-      <p :style="`color: ${experience.color};`">{{ experience.title }}</p>
-    </div>
-    <div class="message-body">
-      {{ experience.description }}
-    </div>
-  </article>
+  <nuxt-link :to="`/experiences/${experience.name}`">
+    <article :class="`message ${index === 0 ? 'left' : 'right'}`">
+      <div
+        :style="`background-color: ${experience.bcolor};`"
+        class="message-header"
+      >
+        <p :style="`color: ${experience.color};`">{{ experience.title }}</p>
+      </div>
+      <div class="message-body">
+        {{ experience.description }}
+        <br />
+        <nuxt-link :to="`/experiences/${experience.name}`">
+          Read More
+        </nuxt-link>
+      </div>
+    </article>
+  </nuxt-link>
 </template>
 
 <script>
@@ -30,22 +36,23 @@ export default {
 </script>
 <style scoped>
 .message {
+  display: inline-block;
   margin: auto;
-  min-width: 30vw;
-  max-width: 40vw;
+  width: 80vw;
   transition-duration: 0.5s;
+  margin-bottom: 5%;
 }
 .message:hover {
   transform: translateX(-30px);
 }
 .left {
-  margin-right: 52%;
+  margin-right: 10%;
 }
 .left:hover {
   transform: translateX(30px);
 }
 .right {
-  margin-left: 52%;
+  margin-left: 10%;
 }
 .right:hover {
   transform: translateX(-30px);

@@ -16,7 +16,9 @@
 export default {
   computed: {
     image() {
-      return require(`../../assets/${this.project.attributes.image}`)
+      if (this.project.attributes.image)
+        return require(`../../assets/${this.project.attributes.image}`)
+      else return require(`../../assets/logo.jpg`)
     }
   },
   async asyncData({ params }) {

@@ -1,7 +1,10 @@
 ---
 title: "Software Engineering Intern @ Ensemble Systems"
-description: "I did a bunch of stuff at ensemble"
+description: "Ensemble is a software consulting company delivering software tools and
+services for Adobe Technologies. "
 bcolor: "rgb(24, 199, 200)"
 color: "white"
 ---
-bla bla
+Ensemble is a software consulting company delivering software tools and
+services for Adobe Technologies. 
+- Spearheaded multiple self-motivated projects to improve productivity in the company, such as a plugin to integrate the company’s internal task management system into Jira and Mulesoft modules for Salesforce integration: Java, Javascript, HTML
