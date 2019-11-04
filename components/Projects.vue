@@ -3,7 +3,7 @@
     <p class="title is-2 header">Projects</p>
     <div id="cards">
       <card
-        v-for="project in projects"
+        v-for="project in sortedProjects"
         :key="project.title"
         :project="project"
       />
@@ -21,6 +21,16 @@ export default {
       default() {
         return []
       }
+    }
+  },
+  computed: {
+    sortedProjects() {
+      const sortedProjects = [...this.projects]
+      return sortedProjects.sort((x, y) => {
+        if (x.weight < y.weight) return 1
+        if (x.weight > y.weight) return -1
+        if (x.weight === y.weight) return 0
+      })
     }
   }
 }
@@ -40,16 +50,18 @@ export default {
   color: white;
 }
 #cards {
-  width: 80%;
+  width: 100%;
   margin: auto;
   margin-top: 4%;
-  display: flex;
+  display: grid;
+  grid-column-gap: 2%;
+  grid-row-gap: 1%;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .projects {
   text-align: center;
-  margin-top: 2%;
-  margin-bottom: 2%;
+  margin: 2% 2%;
   animation: 1s ease-out slideInFromBottom;
 }
 @media only screen and (max-width: 768px) {
