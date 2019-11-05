@@ -24,11 +24,6 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      visible: true
-    }
-  },
   computed: {
     sortedProjects() {
       const sortedProjects = [...this.projects]
@@ -37,23 +32,6 @@ export default {
         if (x.weight > y.weight) return -1
         if (x.weight === y.weight) return 0
       })
-    }
-  },
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll())
-  },
-  methods: {
-    handleScroll() {
-      let lastScroll = 0
-      return (event) => {
-        const scroll = window.pageYOffset || document.documentElement.scrollTop
-        if (scroll > lastScroll) {
-          this.visible = false
-        } else {
-          this.visible = true
-        }
-        lastScroll = scroll
-      }
     }
   }
 }
