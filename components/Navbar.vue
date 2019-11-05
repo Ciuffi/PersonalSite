@@ -4,6 +4,7 @@
       id="navbar"
       style="background-color: #181a1b;"
       class="navbar is-dark is-fixed-top"
+      :class="{ visible: visible }"
       role="navigation"
       aria-label="main navigation"
     >
@@ -51,7 +52,27 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      visible: true
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll())
+  },
   methods: {
+    handleScroll() {
+      let lastScroll = 0
+      return (event) => {
+        const scroll = window.pageYOffset || document.documentElement.scrollTop
+        if (scroll > lastScroll) {
+          this.visible = false
+        } else {
+          this.visible = true
+        }
+        lastScroll = scroll
+      }
+    },
     scrollOrLink(newRoute) {
       if (this.$nuxt.$route.path !== '/') {
         return this.$router.push({
@@ -65,8 +86,12 @@ export default {
 }
 </script>
 <style scoped>
+.navbar {
+  opacity: 0;
+  transition-duration: 0.5s;
+}
 .vl {
-  border: 1.2px solid white;
+  border: 1.5px solid white;
   height: 10px;
   width: 0px;
   margin-right: 1%;
@@ -97,6 +122,9 @@ export default {
   z-index: 20;
   background-color: #181a1b;
   color: white;
+}
+.visible {
+  opacity: 1;
 }
 @media only screen and (max-width: 1000px) {
   .navbar {
