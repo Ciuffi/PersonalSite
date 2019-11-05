@@ -6,6 +6,7 @@ lang: "Nuxt.js (Javascript)"
 bcolor: "#00c58e"
 color: "black"
 limage: "nuxt.svg"
+weight: 1
 ---
 
 # Ciuffi.dev

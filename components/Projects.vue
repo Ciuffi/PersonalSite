@@ -26,8 +26,7 @@ export default {
   },
   computed: {
     sortedProjects() {
-      const sortedProjects = [...this.projects]
-      return sortedProjects.sort((x, y) => {
+      return [...this.projects].sort((x, y) => {
         if (x.weight < y.weight) return 1
         if (x.weight > y.weight) return -1
         if (x.weight === y.weight) return 0
