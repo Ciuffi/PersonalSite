@@ -1,5 +1,5 @@
 ---
-title: "Software Engineering Intern @ Ensemble Systems"
+title: "Software Engineering Intern @ Ensemble"
 description: "Ensemble is a software consulting company delivering software tools and
 services for Adobe Technologies. "
 bcolor: "rgb(24, 199, 200)"

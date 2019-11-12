@@ -1,6 +1,6 @@
 <template>
   <section id="contact">
-    <p class="title is-2 header">Contact</p>
+    <p class="title is-2 header">Contact 📨</p>
     <a id="twitterLink" href="https://twitter.com/ciuffi" target="_blank">
       <div id="twitter">
         <img

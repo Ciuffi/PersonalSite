@@ -1,6 +1,6 @@
 <template>
   <nuxt-link :to="`/experiences/${experience.name}`">
-    <article :class="`message ${index === 0 ? 'left' : 'right'}`">
+    <article class="message">
       <div
         :style="`background-color: ${experience.bcolor};`"
         class="message-header"
@@ -8,7 +8,9 @@
         <p :style="`color: ${experience.color};`">{{ experience.title }}</p>
       </div>
       <div class="message-body">
-        {{ experience.description }}
+        <span v-line-clamp="4">
+          {{ experience.description }}
+        </span>
         <br />
         <nuxt-link :to="`/experiences/${experience.name}`">
           Read More
@@ -38,32 +40,20 @@ export default {
 .message {
   display: inline-block;
   margin: auto;
-  width: 80vw;
+  width: 100%;
+  height: 100%;
   transition-duration: 0.5s;
   margin-bottom: 5%;
 }
 .message:hover {
-  transform: translateX(-30px);
-}
-.left {
-  margin-right: 10%;
-}
-.left:hover {
-  transform: translateX(30px);
-}
-.right {
-  margin-left: 10%;
-}
-.right:hover {
-  transform: translateX(-30px);
+  transform: translateY(-30px);
 }
 @media only screen and (max-width: 768px) {
   .message {
-    min-width: 80%;
-    max-width: 80%;
     margin: 5% auto;
+    width: 80%;
   }
-  .message {
+  .message:hover {
     transform: none;
   }
 }

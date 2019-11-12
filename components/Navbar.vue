@@ -9,6 +9,7 @@
       aria-label="main navigation"
     >
       <div class="navbar-start">
+        <img class="navbar-item logo" src="~/assets/logo.png" alt="logo" />
         <a class="navbar-item" @click="scrollOrLink('#intro')">
           Home
         </a>
@@ -89,6 +90,9 @@ export default {
 .navbar {
   opacity: 0;
   transition-duration: 0.5s;
+}
+.logo {
+  width: 10%;
 }
 .vl {
   border: 1.5px solid white;
