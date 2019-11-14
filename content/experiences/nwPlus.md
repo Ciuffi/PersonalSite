@@ -2,8 +2,8 @@
 title: "Development Director @ nwPlus"
 description: "nwPlus is a UBC hackathon club annually hosting 1200+ students. I led a team of 6 developer to create websites and tools used to run our hackathons.
 "
-color: "black"
-bcolor: "rgb(49, 243, 184)"
+color: "white"
+bcolor: "rgb(42, 42, 46)"
 ---
 nwPlus is a UBC hackathon club annually hosting 1200+ students. 
 - Organized day-of logistics at multiple hackathons focused on raising awareness in diversity, inclusivity, accessibility for students in Vancouver.  - Managed various projects and a team of 6 developers to create in- house apps and websites in collaboration with club designers

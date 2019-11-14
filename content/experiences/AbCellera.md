@@ -2,8 +2,8 @@
 title: "Software Engineer Intern @ AbCellera"
 description: "AbCellera is a world-leading innovator in antibody discovery for
 therapeutics and immune profiling for vaccine research."
-color: "black"
-bcolor: "rgb(0, 224, 162)"
+color: "white"
+bcolor: "rgb(42, 42, 46)"
 ---
 AbCellera is a world-leading innovator in antibody discovery for
 therapeutics and immune profiling for vaccine research. 
