@@ -8,7 +8,7 @@
         <p :style="`color: ${experience.color};`">{{ experience.title }}</p>
       </div>
       <div class="message-body">
-        <span v-line-clamp="4">
+        <span v-line-clamp="4" style="word-break: normal;">
           {{ experience.description }}
         </span>
         <br />

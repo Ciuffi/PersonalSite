@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="content">
-          <span v-line-clamp="2">
+          <span v-line-clamp="2" style="word-break: normal;">
             {{ project.description }}
           </span>
           <br />
