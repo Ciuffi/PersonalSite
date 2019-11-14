@@ -101,7 +101,7 @@ h1 {
 .markDown {
   border: 2px solid white;
   border-radius: 25px;
-  width: 90%;
+  width: 60%;
   margin: auto;
 }
 @media only screen and (max-width: 768px) {
