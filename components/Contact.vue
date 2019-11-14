@@ -51,6 +51,7 @@
   width: 100%;
   text-align: center;
   animation: opacity 1s, 1s ease-out slideInFromBottom 1s;
+  padding-bottom: 3%;
 }
 #contact > a > div {
   display: inline-block;
