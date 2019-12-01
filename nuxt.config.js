@@ -2,7 +2,7 @@ import path from 'path'
 import glob from 'glob'
 const dynamicRoutes = getDynamicPaths({
   '/projects': 'projects/*.md',
-  '/experiences/': 'experiences/*.md'
+  '/experiences': 'experiences/*.md'
 })
 /* https://github.com/jake-101/bael-template */
 function getDynamicPaths(urlFilepathTable) {
