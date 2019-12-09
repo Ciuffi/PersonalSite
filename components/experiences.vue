@@ -59,14 +59,12 @@ export default {
 .experiences {
   text-align: center;
   margin: 0 2%;
-  margin-top: 2%;
-  margin-bottom: 5%;
   animation: 1s ease-out slideInFromBottom;
 }
 .resume {
   font-size: 1.25em;
-  margin: 3%;
-  margin-bottom: 1%;
+  margin: 0 3%;
+  margin-top: 2%;
   transition-duration: 0.5s;
 }
 .emoji {

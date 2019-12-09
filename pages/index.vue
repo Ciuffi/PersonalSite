@@ -1,9 +1,9 @@
 <template>
   <section class="main">
     <Intro />
-    <Experiences :experiences="experiences" />
-    <Projects :projects="projects" />
-    <Contact />
+    <Experiences class="sect" :experiences="experiences" />
+    <Projects class="sect" :projects="projects" />
+    <Contact class="sect" />
   </section>
 </template>
 
@@ -69,6 +69,9 @@ export default {
 <style scoped>
 #main {
   text-align: center;
+}
+.sect {
+  padding-top: 9%;
 }
 a {
   font-size: 24px;

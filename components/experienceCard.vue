@@ -7,8 +7,8 @@
       >
         <p :style="`color: ${experience.color};`">{{ experience.title }}</p>
       </div>
-      <div class="message-body">
-        <span v-line-clamp="4" style="word-break: normal;">
+      <div style="margin: 0;" class="message-body">
+        <span v-line-clamp="4" style="word-break: normal !important;">
           {{ experience.description }}
         </span>
         <br />
@@ -44,6 +44,7 @@ export default {
   height: 100%;
   transition-duration: 0.5s;
   margin-bottom: 5%;
+  text-align: left;
 }
 .message:hover {
   transform: translateY(-30px);

@@ -52,7 +52,6 @@ export default {
 #cards {
   width: 100%;
   margin: auto;
-  margin-top: 4%;
   /* display: grid;
   grid-column-gap: 2%;
   grid-row-gap: 1%;
@@ -61,7 +60,7 @@ export default {
 
 .projects {
   text-align: center;
-  margin: 2% 2%;
+  margin: 0 2%;
   animation: 1s ease-out slideInFromBottom;
 }
 @media only screen and (max-width: 768px) {

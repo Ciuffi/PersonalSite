@@ -26,12 +26,16 @@
             <p class="title is-4">{{ project.title }}</p>
           </div>
         </div>
-        <div class="content">
-          <span v-line-clamp="2" style="word-break: normal;">
+        <div style="margin: 0;" class="content">
+          <span v-line-clamp="3" style="word-break: normal !important;">
             {{ project.description }}
           </span>
           <br />
-          <nuxt-link :to="`/projects/${project.name}`">Read More</nuxt-link>
+          <nuxt-link
+            style="text-decoration: underline;"
+            :to="`/projects/${project.name}`"
+            >Read More</nuxt-link
+          >
         </div>
       </div>
     </div>
@@ -74,6 +78,7 @@ export default {
   min-width: 30vw;
   max-width: 35vw;
   transition-duration: 0.5s;
+  text-align: left;
 }
 .card:hover {
   transform: translateY(-30px);
