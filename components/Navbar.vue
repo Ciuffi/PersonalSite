@@ -93,6 +93,7 @@ export default {
 }
 .logo {
   width: 10%;
+  height: 100%;
 }
 .vl {
   border: 1.5px solid white;
