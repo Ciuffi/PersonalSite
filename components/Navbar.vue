@@ -30,7 +30,7 @@
         </div>
       </div>
     </nav>
-    <nav id="navbar" class="is-dark mobileNavbar">
+    <nav id="navbar" :class="{ visible: visible }" class="is-dark mobileNavbar">
       <div class="start">
         <a class="navitem" @click="scrollOrLink('#intro')">
           Home
@@ -120,6 +120,9 @@ export default {
   user-select: none;
 }
 .mobileNavbar {
+  opacity: 0;
+  transition-duration: 0.5s;
+
   display: none;
   width: 100%;
   height: 50px;
