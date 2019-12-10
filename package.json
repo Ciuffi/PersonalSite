@@ -9,10 +9,12 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "mobile": "cross-env NUXT_HOST=0.0.0.0 yarn dev"
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-0",
+    "cross-env": "^6.0.3",
     "frontmatter-markdown-loader": "^2.3.0",
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.2",
