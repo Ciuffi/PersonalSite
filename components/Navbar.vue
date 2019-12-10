@@ -65,7 +65,8 @@ export default {
     handleScroll() {
       let lastScroll = 0
       return (event) => {
-        const scroll = window.pageYOffset || document.documentElement.scrollTop
+        let scroll = window.pageYOffset || document.documentElement.scrollTop
+        scroll = scroll > 0 ? scroll : 0
         if (scroll > lastScroll) {
           this.visible = false
         } else {
