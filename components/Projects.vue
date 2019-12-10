@@ -1,7 +1,7 @@
 <template>
   <section v-if="projects.length !== 0" id="projects" class="projects">
     <p class="title is-2 header">Projects 🚀</p>
-    <div id="cards" class="columns is-desktop is-multiline is-centered">
+    <div id="cards" class="columns is-multiline is-centered">
       <card
         v-for="project in sortedProjects"
         :key="project.title"

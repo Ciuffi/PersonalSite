@@ -1,7 +1,7 @@
 <template>
   <section v-if="experiences.length !== 0" id="experiences" class="experiences">
     <p class="title is-2 header">Experiences 💻</p>
-    <div class="columns is-multiline is-centered is-desktop">
+    <div class="columns is-multiline is-centered">
       <experienceCard
         v-for="(experience, index) in experiences"
         :key="experience.title"
