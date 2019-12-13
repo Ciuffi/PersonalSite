@@ -53,6 +53,7 @@
 #textDiv {
   position: absolute;
   font-size: 2em;
+  text-align: left;
   overflow: hidden;
   bottom: 2vh;
   left: 2vh;
