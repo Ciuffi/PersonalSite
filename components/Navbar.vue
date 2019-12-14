@@ -122,7 +122,6 @@ export default {
 .mobileNavbar {
   opacity: 0;
   transition-duration: 0.5s;
-
   display: none;
   width: 100%;
   height: 50px;

@@ -3,8 +3,7 @@
     <div id="Background"><img src="../assets/header.jpg" /></div>
     <div id="textDiv">
       👋 Hi! My name is Giulio. I'm an aspiring developer who loves to make
-      apps, games, and tools. This is my personal website/portfolio, a work in
-      progress :)
+      apps, games, and tools.
     </div>
   </section>
 </template>
