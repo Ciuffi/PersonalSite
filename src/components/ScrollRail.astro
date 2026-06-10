@@ -211,7 +211,7 @@
       const btn = $('.contact .btn-solid')
       const container = $('#projects > .container')
       const headings = $$('.section-heading')
-      if (!chip || featured.length < 2 || grid.length < 7 || !xp || !photo || !btn || !container || !contact) return
+      if (!chip || featured.length < 2 || grid.length < 6 || !xp || !photo || !btn || !container || !contact) return
 
       const C = pageRect(container)
       const xL = C.left - 26
@@ -242,7 +242,6 @@
       const gap1 = (A.bottom + B.top) / 2
       const gap2 = (B.bottom + g[0].top) / 2
       const gapRow = (g[0].bottom + g[3].top) / 2
-      const gapWz = (g[3].bottom + g[6].top) / 2
       const xpEnter = rXp.top - 24
       const xpExit = rXp.bottom + 26
 
@@ -258,9 +257,7 @@
         { x: gut1, y: gap2 }, // into the first grid gutter
         { x: gut1, y: gapRow },
         { x: gut2, y: gapRow }, // jog to the second gutter
-        { x: gut2, y: gapWz },
-        { x: xL, y: gapWz }, // sweep left above the wide card
-        { x: xL, y: xpEnter },
+        { x: gut2, y: xpEnter },
         { x: gutXp, y: xpEnter }, // slide between the xp card and the photo
         { x: gutXp, y: xpExit },
         { x: xL, y: xpExit },
@@ -293,7 +290,6 @@
         { x: xR, y: B.cy },
         { x: gut1, y: g[0].cy },
         { x: gut2, y: g[3].cy },
-        { x: xL, y: g[6].cy },
         { x: gutXp, y: rXp.cy },
         { x: rBtn.left - 14, y: rBtn.cy, terminal: true },
       ]
@@ -313,7 +309,6 @@
         { x: Math.max(30, C.left - 60), y: A.cy, size: 920 },
         { x: Math.min(pr.width - 30, C.right + 60), y: B.cy, size: 880 },
         { x: (C.left + C.right) / 2, y: gapRow, size: 1100 },
-        { x: Math.max(30, C.left - 60), y: g[6].cy, size: 900 },
         { x: gutXp, y: rXp.cy, size: 820 },
         { x: C.left + C.w * 0.55, y: rBtn.cy, size: 840 },
       ]

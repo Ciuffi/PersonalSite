@@ -26,7 +26,10 @@ const index = `P-${String(num).padStart(2, '0')}`
 const linkEntries = [
   links?.github && { href: links.github, label: 'Source ↗' },
   links?.appstore && { href: links.appstore, label: 'App Store ↗' },
-  links?.live && { href: links.live, label: 'Live ↗' },
+  links?.live && {
+    href: links.live,
+    label: links.live.includes('roblox.com') ? 'Play ↗' : 'Live ↗',
+  },
 ].filter(Boolean) as { href: string; label: string }[]
 
 const ogImage =
