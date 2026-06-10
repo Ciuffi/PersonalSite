@@ -99,6 +99,8 @@
     animation: pulse-dot 2.2s ease-out infinite;
   }
 
+  /* opacity + scale are driven per-frame from the line's head position
+     (continuous with scroll), so no CSS transition here */
   :global(.splotch) {
     position: absolute;
     transform: translate(-50%, -50%) scale(0.75);
@@ -110,14 +112,6 @@
       transparent 72%
     );
     opacity: 0;
-    transition:
-      opacity 0.9s ease,
-      transform 1.3s cubic-bezier(0.2, 0.6, 0.2, 1);
-  }
-
-  :global(.splotch.on) {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
   }
 </style>
 
@@ -186,7 +180,7 @@
     let ss = new Float32Array(0) // cumulative length at each sample
     let total = 0
     let nodes: { el: HTMLElement; y: number }[] = []
-    let splotches: { el: HTMLElement; y: number }[] = []
+    let splotches: { el: HTMLElement; y: number; k: number }[] = []
     let traced: {
       el: HTMLElement
       y: number
@@ -312,15 +306,15 @@
         nodes.push({ el, y: spot.y })
       }
 
-      // ambient background splotches — centered in the OPEN bands the line
-      // sweeps through (gaps and margins), never behind a card where the
-      // bright core would be occluded
+      // ambient background splotches — vertically centered ON each content
+      // row so the glow lines up with the cards, horizontally placed in the
+      // margins/gutters where the line runs so the bright core stays visible
       const splotchSpots = [
-        { x: C.left + C.w * 0.25, y: gapHero, size: 920 },
-        { x: C.right - C.w * 0.2, y: gap1, size: 880 },
+        { x: Math.max(30, C.left - 60), y: A.cy, size: 920 },
+        { x: Math.min(pr.width - 30, C.right + 60), y: B.cy, size: 880 },
         { x: (C.left + C.right) / 2, y: gapRow, size: 1100 },
-        { x: C.left + C.w * 0.35, y: gapWz, size: 900 },
-        { x: C.left + C.w * 0.18, y: xpEnter, size: 820 },
+        { x: Math.max(30, C.left - 60), y: g[6].cy, size: 900 },
+        { x: gutXp, y: rXp.cy, size: 820 },
         { x: C.left + C.w * 0.55, y: rBtn.cy, size: 840 },
       ]
       for (const spot of splotchSpots) {
@@ -331,7 +325,7 @@
         el.style.width = `${spot.size}px`
         el.style.height = `${spot.size}px`
         splotchBox.appendChild(el)
-        splotches.push({ el, y: spot.y })
+        splotches.push({ el, y: spot.y, k: -1 })
       }
 
       // elements that power on as the head passes their center. Headings
@@ -401,7 +395,17 @@
         packet.style.opacity = '0'
       }
 
-      for (const s of splotches) s.el.classList.toggle('on', lightY >= s.y - 2)
+      // splotches bloom continuously with the head's approach: a 320px ramp
+      // that completes exactly when the head reaches the splotch center
+      for (const s of splotches) {
+        const lin = Math.max(0, Math.min(1, (lightY - (s.y - 320)) / 320))
+        const k = lin * lin * (3 - 2 * lin) // smoothstep
+        if (Math.abs(k - s.k) > 0.004) {
+          s.el.style.opacity = k.toFixed(3)
+          s.el.style.transform = `translate(-50%, -50%) scale(${(0.75 + 0.25 * k).toFixed(3)})`
+          s.k = k
+        }
+      }
       for (const t of traced) {
         if (t.heading) {
           t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
@@ -438,7 +442,10 @@
       glow.style.strokeDasharray = 'none'
       packet.style.opacity = '0'
       nodes.forEach((n) => n.el.classList.add('lit'))
-      splotches.forEach((s) => s.el.classList.add('on'))
+      splotches.forEach((s) => {
+        s.el.style.opacity = '1'
+        s.el.style.transform = 'translate(-50%, -50%) scale(1)'
+      })
       if (isWide())
         traced.forEach((t) => {
           if (t.heading) t.el.classList.add('traced')
