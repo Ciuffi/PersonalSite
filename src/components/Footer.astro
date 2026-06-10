@@ -1,0 +1,42 @@
+---
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span class="mono">© {year} Giulio Rossi</span>
+    <span class="mono dim">Built with Astro · Hosted on GitHub Pages</span>
+    <a class="mono top" href="#top">Top ↑</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 2.2rem;
+    margin-top: 2rem;
+  }
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--text-low);
+  }
+
+  .dim {
+    color: var(--text-low);
+  }
+
+  .top {
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .top:hover {
+    color: var(--acc);
+  }
+</style>

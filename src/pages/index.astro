@@ -1,0 +1,330 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import ProjectCard from '../components/ProjectCard.astro'
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+)
+const featured = projects.filter((p) => p.data.featured)
+const rest = projects.filter((p) => !p.data.featured)
+
+const description =
+  'Giulio Rossi — software engineer at Amazon. I build games, apps, and tools: multiplayer Roblox games, iOS apps, and AI-powered tabletop tech.'
+
+const personLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Giulio Rossi',
+  url: 'https://www.ciuffi.dev/',
+  jobTitle: 'Software Engineer',
+  worksFor: { '@type': 'Organization', name: 'Amazon' },
+  sameAs: ['https://github.com/ciuffi'],
+})
+---
+
+<BaseLayout title="Giulio Rossi — software engineer & builder" description={description}>
+  <script is:inline type="application/ld+json" set:html={personLd} />
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="container">
+      <p class="mono kicker load-rise" style="--rise-delay: 0.05s">
+        <span class="slashes">//</span> Software engineer & builder
+      </p>
+      <h1 class="load-rise" style="--rise-delay: 0.15s">Giulio&nbsp;Rossi</h1>
+      <p class="lede load-rise" style="--rise-delay: 0.25s">
+        By day I build software at Amazon. The rest of the time I ship things for
+        fun — multiplayer Roblox games, iOS apps, an Apple&nbsp;Watch game, and
+        AI-powered tools for my D&amp;D table.
+      </p>
+      <div class="cta-row load-rise" style="--rise-delay: 0.35s">
+        <a class="btn btn-solid" href="#projects">View projects ↓</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+      <a class="status load-rise" href="/projects/tackle-for-brainrots/" style="--rise-delay: 0.45s">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="mono">Currently building: Tackle for Brainrots</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section class="section" id="projects">
+    <div class="container">
+      <SectionHeading
+        index="01"
+        title="Projects"
+        sub="Selected work, 2018 → today. The two up top are what I'm building right now."
+      />
+      <div class="featured-stack">
+        {featured.map((p, i) => <ProjectCard project={p} num={i + 1} variant="featured" delay={i * 90} />)}
+      </div>
+      <div class="grid">
+        {rest.map((p, i) => <ProjectCard project={p} num={i + 1 + featured.length} delay={(i % 3) * 90} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="section" id="experience">
+    <div class="container">
+      <SectionHeading index="02" title="Experience" />
+      <div class="xp" data-reveal>
+        <div class="xp-row">
+          <div>
+            <h3 class="xp-role">Software Engineer</h3>
+            <p class="xp-org">Amazon</p>
+          </div>
+          <span class="mono xp-dates">Jul 2021 — Present</span>
+        </div>
+        <div class="xp-bar" aria-hidden="true">
+          <span class="xp-fill"></span>
+          <span class="xp-now"></span>
+        </div>
+        <p class="xp-note">
+          Before that: computer science at UBC, a string of hackathon wins, and a
+          lot of side projects — most of them below.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section" id="contact">
+    <div class="container">
+      <SectionHeading index="03" title="Contact" />
+      <div class="contact" data-reveal>
+        <h3 class="contact-line">Let's build something.</h3>
+        <p class="contact-sub">
+          Want to talk about a project, a game, or just say hi? My inbox is open.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-solid" href="mailto:ciuffi9@mac.com">Email me</a>
+          <a class="btn btn-ghost" href="https://github.com/ciuffi" target="_blank" rel="noopener">
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- hero ---- */
+  .hero {
+    position: relative;
+    padding-top: clamp(9rem, 22vh, 13rem);
+    padding-bottom: clamp(4rem, 10vh, 7rem);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(238, 242, 230, 0.1) 1px, transparent 1px);
+    background-size: 34px 34px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 0%, black 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse 90% 80% at 60% 0%, black 30%, transparent 75%);
+  }
+
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    top: -240px;
+    right: -160px;
+    width: 640px;
+    height: 640px;
+    background: radial-gradient(circle, var(--acc-soft), transparent 65%);
+  }
+
+  .hero .container {
+    position: relative;
+  }
+
+  .kicker {
+    color: var(--text-mid);
+    margin-bottom: 1.4rem;
+  }
+
+  .slashes {
+    color: var(--acc);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3.2rem, 9vw, 6.6rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+    margin-bottom: 1.6rem;
+  }
+
+  .lede {
+    max-width: 56ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+    color: var(--text-mid);
+    margin-bottom: 2.4rem;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 3.2rem;
+    padding: 0.75rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-mid);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .status:hover {
+    border-color: var(--acc);
+    color: var(--text-hi);
+  }
+
+  .status .mono {
+    font-size: 0.64rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--acc);
+    flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dot {
+      animation: pulse-dot 2.2s ease-out infinite;
+    }
+  }
+
+  /* ---- projects ---- */
+  .featured-stack {
+    display: grid;
+    gap: 1.4rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+  }
+
+  @media (max-width: 980px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---- experience ---- */
+  .xp {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.6rem, 4vw, 2.6rem);
+    background: color-mix(in srgb, var(--ink-800) 55%, transparent);
+  }
+
+  .xp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.6rem;
+  }
+
+  .xp-role {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .xp-org {
+    color: var(--acc);
+    font-size: 1.05rem;
+    margin-top: 0.2rem;
+  }
+
+  .xp-dates {
+    color: var(--text-mid);
+  }
+
+  .xp-bar {
+    position: relative;
+    height: 2px;
+    background: var(--line);
+    border-radius: 2px;
+    margin-bottom: 1.6rem;
+  }
+
+  .xp-fill {
+    position: absolute;
+    inset: 0 6px 0 0;
+    background: linear-gradient(90deg, transparent, var(--acc));
+    opacity: 0.7;
+  }
+
+  .xp-now {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--acc);
+    transform: translateY(-50%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .xp-now {
+      animation: pulse-dot 2.2s ease-out infinite;
+    }
+  }
+
+  .xp-note {
+    color: var(--text-low);
+    max-width: 60ch;
+    font-size: 0.97rem;
+  }
+
+  /* ---- contact ---- */
+  .contact {
+    text-align: left;
+  }
+
+  .contact-line {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.5vw, 3.4rem);
+    font-weight: 750;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  .contact-sub {
+    color: var(--text-mid);
+    margin-bottom: 2rem;
+    max-width: 48ch;
+  }
+</style>

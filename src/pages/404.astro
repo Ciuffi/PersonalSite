@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  title="404 — Giulio Rossi"
+  description="Page not found — this page may have moved in the 2026 rebuild of ciuffi.dev."
+>
+  <section class="nf">
+    <div class="container">
+      <p class="mono code"><span class="err">ERR</span> // 404</p>
+      <h1>Signal lost.</h1>
+      <p class="sub">
+        This page doesn't exist — it may have moved when the site was rebuilt in
+        2026. The projects all survived, though.
+      </p>
+      <div class="row">
+        <a class="btn btn-solid" href="/">Back home</a>
+        <a class="btn btn-ghost" href="/#projects">View projects</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 72vh;
+    display: flex;
+    align-items: center;
+    padding-top: 5rem;
+  }
+
+  .code {
+    color: var(--text-mid);
+    margin-bottom: 1.2rem;
+  }
+
+  .err {
+    color: var(--acc);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 9vw, 6rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 1.2rem;
+  }
+
+  .sub {
+    color: var(--text-mid);
+    max-width: 46ch;
+    margin-bottom: 2.2rem;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+</style>

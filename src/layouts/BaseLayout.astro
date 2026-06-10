@@ -1,0 +1,80 @@
+---
+import '@fontsource-variable/bricolage-grotesque'
+import '@fontsource-variable/instrument-sans'
+import '@fontsource-variable/martian-mono'
+import '../styles/global.css'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+
+interface Props {
+  title: string
+  description: string
+  ogImage?: string
+}
+
+const { title, description, ogImage = '/og.png' } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site)
+const ogImageUrl = new URL(ogImage, Astro.site)
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Giulio Rossi" />
+    <meta name="theme-color" content="#0a0c0a" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ciuffi.dev" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script is:inline>
+      document.documentElement.classList.add('js')
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <div class="grain" aria-hidden="true"></div>
+
+    <script>
+      // scroll reveal
+      const revealed = document.querySelectorAll('[data-reveal]')
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in')
+                io.unobserve(e.target)
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+        )
+        revealed.forEach((el) => io.observe(el))
+      } else {
+        revealed.forEach((el) => el.classList.add('is-in'))
+      }
+    </script>
+  </body>
+</html>

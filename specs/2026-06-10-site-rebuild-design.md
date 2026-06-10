@@ -93,7 +93,8 @@ projects: defineCollection({ schema: ({ image }) => z.object({
    text with the award info from the card blurb (2nd place ×3 tracks).
 7. **Warpzone** (2018) — Unity endless runner; fix the wrong "Dark Slack App" heading.
 8. **Dark Slack App** (2018) — macOS Slack theming app, GitHub releases link.
-9. **AcaMedIa** (2018) — XDHacks Vue webapp. Dead appspot link removed; describe stack.
+9. **AcaMedIa** (2018) — XDHacks Vue webapp. Appspot link verified alive at rebuild time
+   and kept.
 
 All legacy copy keeps its substance but gets a grammar/typo pass ("Bult with", "Its still",
 etc.). Verbatim-preserved facts: names, dates, stacks, links, story details.
@@ -109,8 +110,10 @@ games, iOS apps, and AI-powered tools. Friendly, no buzzwords.
   soft off-white text, muted gray secondary text, ONE accent (electric chartreuse/lime
   family, exact value tuned during implementation) used for links, highlights, focus rings.
   Per-project subtle tint allowed on cards via tag color only — no rainbow.
-- **Type:** Space Grotesk (display/headings), Inter (body), IBM Plex Mono (labels, tags,
-  meta). Big type scale on hero (clamp-based fluid sizing).
+- **Type:** Bricolage Grotesque (display/headings), Instrument Sans (body), Martian Mono
+  (labels, tags, meta). Big type scale on hero (clamp-based fluid sizing).
+  *(Changed during implementation from the originally drafted Space Grotesk/Inter/IBM Plex
+  pairing for a more distinctive look.)*
 - **Texture:** subtle grain/grid background motif, hairline borders (`1px` at ~10% white),
   generous spacing, large border radii NOT used (sharp, refined corners ~8px max).
 - **Motion:** scroll-reveal fade/translate (respects `prefers-reduced-motion`), hover lift

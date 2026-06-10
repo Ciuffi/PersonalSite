@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Wireframe d20 die showing 20, on a dark dotted grid">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#C6F24E" stop-opacity="0.13"/>
+      <stop offset="55%" stop-color="#C6F24E" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#C6F24E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0D0B"/>
+      <stop offset="100%" stop-color="#10140E"/>
+    </linearGradient>
+    <pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="18" r="1.1" fill="#EEF2E6" fill-opacity="0.07"/>
+    </pattern>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <rect width="1200" height="750" fill="url(#dots)"/>
+  <rect width="1200" height="750" fill="url(#glow)"/>
+
+  <!-- corner ticks -->
+  <g stroke="#EEF2E6" stroke-opacity="0.25" stroke-width="2">
+    <path d="M40 56 V40 H56"/>
+    <path d="M1144 40 H1160 V56"/>
+    <path d="M1160 694 V710 H1144"/>
+    <path d="M56 710 H40 V694"/>
+  </g>
+
+  <!-- measure ring -->
+  <circle cx="600" cy="375" r="300" fill="none" stroke="#EEF2E6" stroke-opacity="0.08" stroke-width="1.5" stroke-dasharray="2 10"/>
+
+  <!-- d20 glow underlay -->
+  <g filter="url(#blur)" stroke="#C6F24E" stroke-opacity="0.55" stroke-width="4" fill="none" stroke-linejoin="round">
+    <path d="M600 145 L799 260 L799 490 L600 605 L401 490 L401 260 Z"/>
+  </g>
+
+  <!-- d20 wireframe -->
+  <g stroke="#C6F24E" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- outer hexagon silhouette -->
+    <path d="M600 145 L799 260 L799 490 L600 605 L401 490 L401 260 Z" stroke-width="3" stroke-opacity="0.95"/>
+    <!-- central face -->
+    <path d="M476 304 L724 304 L600 518 Z" stroke-width="2" stroke-opacity="0.65"/>
+    <!-- inner edges -->
+    <g stroke-width="1.6" stroke-opacity="0.45">
+      <path d="M476 304 L401 260"/>
+      <path d="M476 304 L600 145"/>
+      <path d="M476 304 L401 490"/>
+      <path d="M724 304 L799 260"/>
+      <path d="M724 304 L600 145"/>
+      <path d="M724 304 L799 490"/>
+      <path d="M600 518 L600 605"/>
+      <path d="M600 518 L799 490"/>
+      <path d="M600 518 L401 490"/>
+    </g>
+  </g>
+
+  <!-- vertex nodes -->
+  <g fill="#C6F24E">
+    <circle cx="600" cy="145" r="5" fill-opacity="0.9"/>
+    <circle cx="799" cy="260" r="5" fill-opacity="0.9"/>
+    <circle cx="799" cy="490" r="5" fill-opacity="0.9"/>
+    <circle cx="600" cy="605" r="5" fill-opacity="0.9"/>
+    <circle cx="401" cy="490" r="5" fill-opacity="0.9"/>
+    <circle cx="401" cy="260" r="5" fill-opacity="0.9"/>
+    <circle cx="476" cy="304" r="3.5" fill-opacity="0.6"/>
+    <circle cx="724" cy="304" r="3.5" fill-opacity="0.6"/>
+    <circle cx="600" cy="518" r="3.5" fill-opacity="0.6"/>
+  </g>
+
+  <!-- pixel "20" on the central face -->
+  <g fill="#C6F24E" fill-opacity="0.92">
+    <!-- 2 : origin (551,330), cell 14 -->
+    <rect x="551" y="330" width="42" height="14"/>
+    <rect x="579" y="344" width="14" height="14"/>
+    <rect x="551" y="358" width="42" height="14"/>
+    <rect x="551" y="372" width="14" height="14"/>
+    <rect x="551" y="386" width="42" height="14"/>
+    <!-- 0 : origin (607,330) -->
+    <rect x="607" y="330" width="42" height="14"/>
+    <rect x="607" y="344" width="14" height="42"/>
+    <rect x="635" y="344" width="14" height="42"/>
+    <rect x="607" y="386" width="42" height="14"/>
+  </g>
+</svg>

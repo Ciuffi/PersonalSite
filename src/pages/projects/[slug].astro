@@ -1,0 +1,242 @@
+---
+import { getCollection, render } from 'astro:content'
+import { Image } from 'astro:assets'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort(
+    (a, b) => a.data.order - b.data.order
+  )
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      num: i + 1,
+      prev: projects[i - 1] ?? null,
+      next: projects[i + 1] ?? null,
+    },
+  }))
+}
+
+const { project, num, prev, next } = Astro.props
+const { Content } = await render(project)
+const { title, description, year, tags, cover, coverAlt, links } = project.data
+const index = `P-${String(num).padStart(2, '0')}`
+
+const linkEntries = [
+  links?.github && { href: links.github, label: 'Source ↗' },
+  links?.appstore && { href: links.appstore, label: 'App Store ↗' },
+  links?.live && { href: links.live, label: 'Live ↗' },
+].filter(Boolean) as { href: string; label: string }[]
+
+const ogImage =
+  cover && cover.format !== 'svg' ? cover.src : undefined
+---
+
+<BaseLayout title={`${title} — Giulio Rossi`} description={description} ogImage={ogImage}>
+  <article class="project">
+    <div class="container">
+      <nav class="crumbs" data-reveal>
+        <a class="mono back" href="/#projects">← All projects</a>
+      </nav>
+
+      <header class="head" data-reveal style="--reveal-delay: 60ms">
+        <div class="meta-row">
+          <span class="mono idx">{index}</span>
+          <span class="mono yr">{year}</span>
+        </div>
+        <h1>{title}</h1>
+        <div class="chips">
+          {tags.map((t) => <span class="chip">{t}</span>)}
+        </div>
+        {
+          linkEntries.length > 0 && (
+            <div class="links">
+              {linkEntries.map((l) => (
+                <a class="btn btn-ghost" href={l.href} target="_blank" rel="noopener">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      {
+        cover && (
+          <figure class="cover-panel" data-reveal style="--reveal-delay: 120ms">
+            <Image
+              src={cover}
+              alt={coverAlt ?? `${title} preview`}
+              widths={[640, 960, 1280]}
+              sizes="(max-width: 1180px) 94vw, 1056px"
+              loading="eager"
+            />
+          </figure>
+        )
+      }
+
+      <div class="prose" data-reveal style="--reveal-delay: 180ms">
+        <Content />
+      </div>
+
+      <nav class="pager" aria-label="More projects">
+        {
+          prev ? (
+            <a class="pager-cell" href={`/projects/${prev.id}/`}>
+              <span class="mono dir">← Previous</span>
+              <span class="pager-title">{prev.data.title}</span>
+            </a>
+          ) : (
+            <span class="pager-cell empty" />
+          )
+        }
+        {
+          next ? (
+            <a class="pager-cell next" href={`/projects/${next.id}/`}>
+              <span class="mono dir">Next →</span>
+              <span class="pager-title">{next.data.title}</span>
+            </a>
+          ) : (
+            <span class="pager-cell empty" />
+          )
+        }
+      </nav>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project {
+    padding-top: clamp(7rem, 16vh, 9.5rem);
+    padding-bottom: clamp(3rem, 8vh, 5rem);
+  }
+
+  .crumbs {
+    margin-bottom: 2.4rem;
+  }
+
+  .back {
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .back:hover {
+    color: var(--acc);
+  }
+
+  .head {
+    margin-bottom: 2.4rem;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .idx {
+    color: var(--acc);
+  }
+
+  .yr {
+    color: var(--text-low);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+    font-weight: 750;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    margin-bottom: 1.2rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.6rem;
+  }
+
+  .cover-panel {
+    display: flex;
+    justify-content: center;
+    background-color: var(--ink-900);
+    background-image: radial-gradient(rgba(238, 242, 230, 0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .cover-panel :global(img) {
+    max-height: 600px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 4rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pager-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .pager-cell:not(.empty):hover {
+    border-color: var(--acc);
+    transform: translateY(-2px);
+  }
+
+  .pager-cell.empty {
+    border: none;
+  }
+
+  .next {
+    text-align: right;
+  }
+
+  .dir {
+    color: var(--text-low);
+  }
+
+  .pager-title {
+    font-family: var(--font-display);
+    font-weight: 650;
+    color: var(--text-hi);
+  }
+
+  @media (max-width: 560px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+
+    .next {
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+interface Props {
+  index: string
+  title: string
+  sub?: string
+}
+
+const { index, title, sub } = Astro.props
+---
+
+<div class="section-heading" data-reveal>
+  <div class="rule-row">
+    <span class="index mono">{index}</span>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <h2>{title}</h2>
+  {sub && <p class="sub">{sub}</p>}
+</div>
+
+<style>
+  .section-heading {
+    margin-bottom: clamp(2.2rem, 5vh, 3.5rem);
+  }
+
+  .rule-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .index {
+    color: var(--acc);
+  }
+
+  .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .sub {
+    margin-top: 0.6rem;
+    color: var(--text-low);
+    max-width: 52ch;
+  }
+</style>
