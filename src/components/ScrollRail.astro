@@ -1,0 +1,212 @@
+---
+// Decorative "circuit trace" in the left margin of the homepage. A phosphor
+// line draws itself downward in sync with scroll, a glowing packet rides the
+// draw head, and nodes light up as the line passes them. Desktop-only
+// (≥1280px) and static under prefers-reduced-motion.
+const NODES = [
+  { x: 24, y: 80 },
+  { x: 36, y: 225 },
+  { x: 14, y: 385 },
+  { x: 32, y: 555 },
+  { x: 20, y: 725 },
+  { x: 24, y: 905 },
+]
+const PATH = 'M24 0 V150 H36 V300 H14 V470 H32 V640 H20 V810 H24 V1000'
+---
+
+<div class="rail" id="scroll-rail" aria-hidden="true">
+  <svg viewBox="0 0 48 1000" preserveAspectRatio="none">
+    <path class="trace base" d={PATH} vector-effect="non-scaling-stroke"></path>
+    <path class="trace glow" d={PATH} vector-effect="non-scaling-stroke"></path>
+  </svg>
+  {
+    NODES.map((n) => (
+      <span
+        class="node"
+        style={`left: ${(n.x / 48) * 100}%; top: ${n.y / 10}%;`}
+        data-y={n.y}
+      />
+    ))
+  }
+  <span class="packet"></span>
+</div>
+
+<style>
+  .rail {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: max(12px, calc((100vw - var(--container)) / 2 - 64px));
+    width: 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 1279px) {
+    .rail {
+      display: none;
+    }
+  }
+
+  .rail svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .trace {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .base {
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+
+  .glow {
+    stroke: var(--acc);
+    stroke-width: 2;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 5px var(--acc-glow));
+    stroke-dasharray: 0 10000;
+  }
+
+  .node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--ink-900);
+    transform: translate(-50%, -50%);
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .node.lit {
+    background: var(--acc);
+    border-color: var(--acc);
+    box-shadow: 0 0 10px var(--acc-glow);
+  }
+
+  .packet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    background: var(--acc);
+    box-shadow: 0 0 12px var(--acc-glow);
+    opacity: 0;
+    transition:
+      transform 0.12s linear,
+      opacity 0.3s ease;
+  }
+</style>
+
+<script>
+  const rail = document.getElementById('scroll-rail')
+  if (rail) {
+    const svg = rail.querySelector('svg') as SVGSVGElement
+    const base = rail.querySelector('.base') as SVGPathElement
+    const glow = rail.querySelector('.glow') as SVGPathElement
+    const packet = rail.querySelector('.packet') as HTMLElement
+    const nodes = [...rail.querySelectorAll<HTMLElement>('.node')]
+
+    // normalized geometry (y in 0–1000); rebuilt in real pixels at runtime so
+    // dash lengths are exact (a stretched viewBox distorts dash patterns)
+    const PTS: [number, number][] = [
+      [24, 0], [24, 150], [36, 150], [36, 300], [14, 300], [14, 470],
+      [32, 470], [32, 640], [20, 640], [20, 810], [24, 810], [24, 1000],
+    ]
+    type Seg = { ax: number; ay: number; by: number; start: number; len: number }
+    let segs: Seg[] = []
+    let total = 0
+    let H = 0
+
+    const buildGeometry = () => {
+      H = rail.getBoundingClientRect().height
+      if (H <= 0) return
+      const pts = PTS.map(([x, y]) => [x, (y / 1000) * H])
+      svg.setAttribute('viewBox', `0 0 48 ${H}`)
+      const d = `M${pts[0][0]} ${pts[0][1]} ` + pts.slice(1).map(([x, y]) => `L${x} ${Math.round(y * 10) / 10}`).join(' ')
+      base.setAttribute('d', d)
+      glow.setAttribute('d', d)
+      base.removeAttribute('vector-effect')
+      segs = []
+      total = 0
+      for (let i = 1; i < pts.length; i++) {
+        const len = Math.abs(pts[i][0] - pts[i - 1][0]) + Math.abs(pts[i][1] - pts[i - 1][1])
+        segs.push({ ax: pts[i - 1][0], ay: pts[i - 1][1], by: pts[i][1], start: total, len })
+        total += len
+      }
+    }
+
+    // path length consumed when the draw head sits at pixel height y
+    const lengthAtY = (y: number) => {
+      let s = 0
+      for (const sg of segs) {
+        if (sg.ay === sg.by) {
+          if (y > sg.ay) s = sg.start + sg.len
+          else break
+        } else if (y >= sg.by) {
+          s = sg.start + sg.len
+        } else if (y > sg.ay) {
+          s = sg.start + (y - sg.ay)
+          break
+        } else break
+      }
+      return s
+    }
+
+    const xAtY = (y: number) => {
+      for (const sg of segs) {
+        if (sg.ay !== sg.by && y >= sg.ay && y <= sg.by) return sg.ax
+      }
+      return 24
+    }
+
+    let ticking = false
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const update = () => {
+      ticking = false
+      const r = rail.getBoundingClientRect()
+      if (Math.abs(r.height - H) > 1) buildGeometry()
+      if (reduced) {
+        // inline style: wins over the stylesheet's initial hidden dash state
+        glow.style.strokeDasharray = 'none'
+        nodes.forEach((n) => n.classList.add('lit'))
+        return
+      }
+      const railTop = r.top + window.scrollY
+      const anchor = window.scrollY + window.innerHeight * 0.72
+      const p = Math.max(0, Math.min(1, (anchor - railTop) / r.height))
+      const y = p * r.height
+      glow.style.strokeDasharray = `${lengthAtY(y)} ${total + 50}`
+      const px = (xAtY(y) / 48) * r.width
+      packet.style.transform = `translate(${px}px, ${y}px)`
+      packet.style.opacity = p > 0.002 && p < 0.998 ? '1' : '0'
+      for (const n of nodes) n.classList.toggle('lit', y >= (Number(n.dataset.y) / 1000) * r.height)
+    }
+    const queue = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+
+    buildGeometry()
+    update()
+    if (!reduced) {
+      addEventListener('scroll', queue, { passive: true })
+      addEventListener('resize', queue, { passive: true })
+      addEventListener('load', queue)
+      new ResizeObserver(queue).observe(rail)
+    }
+  }
+</script>

@@ -1,8 +1,11 @@
 ---
 import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import SectionHeading from '../components/SectionHeading.astro'
 import ProjectCard from '../components/ProjectCard.astro'
+import ScrollRail from '../components/ScrollRail.astro'
+import hackathon from '../assets/hackathon.jpg'
 
 const projects = (await getCollection('projects')).sort(
   (a, b) => a.data.order - b.data.order
@@ -26,6 +29,9 @@ const personLd = JSON.stringify({
 
 <BaseLayout title="Giulio Rossi — software engineer & builder" description={description}>
   <script is:inline type="application/ld+json" set:html={personLd} />
+
+  <div class="page">
+    <ScrollRail />
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
@@ -72,22 +78,38 @@ const personLd = JSON.stringify({
   <section class="section" id="experience">
     <div class="container">
       <SectionHeading index="02" title="Experience" />
-      <div class="xp" data-reveal>
-        <div class="xp-row">
-          <div>
-            <h3 class="xp-role">Software Engineer</h3>
-            <p class="xp-org">Amazon</p>
+      <div class="xp-grid">
+        <div class="xp" data-reveal>
+          <div class="xp-row">
+            <div>
+              <h3 class="xp-role">Software Engineer</h3>
+              <p class="xp-org">Amazon</p>
+            </div>
+            <span class="mono xp-dates">Jul 2021 — Present</span>
           </div>
-          <span class="mono xp-dates">Jul 2021 — Present</span>
+          <div class="xp-bar" aria-hidden="true">
+            <span class="xp-fill"></span>
+            <span class="xp-now"></span>
+          </div>
+          <p class="xp-note">
+            Before that: computer science at UBC, a string of hackathon wins, and
+            a lot of side projects — most of them below.
+          </p>
         </div>
-        <div class="xp-bar" aria-hidden="true">
-          <span class="xp-fill"></span>
-          <span class="xp-now"></span>
-        </div>
-        <p class="xp-note">
-          Before that: computer science at UBC, a string of hackathon wins, and a
-          lot of side projects — most of them below.
-        </p>
+        <figure class="xp-photo" data-reveal style="--reveal-delay: 90ms">
+          <div class="duo">
+            <Image
+              src={hackathon}
+              alt="Giulio helping students with their laptops in a UBC lecture hall during a hackathon"
+              widths={[480, 760, 1080]}
+              sizes="(max-width: 860px) 92vw, 420px"
+              loading="lazy"
+            />
+          </div>
+          <figcaption class="mono">
+            nwPlus @ UBC — hackathons for 1,200+ students
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -110,9 +132,14 @@ const personLd = JSON.stringify({
       </div>
     </div>
   </section>
+  </div>
 </BaseLayout>
 
 <style>
+  .page {
+    position: relative;
+  }
+
   /* ---- hero ---- */
   .hero {
     position: relative;
@@ -237,6 +264,71 @@ const personLd = JSON.stringify({
   }
 
   /* ---- experience ---- */
+  .xp-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: 1.4rem;
+    align-items: stretch;
+  }
+
+  @media (max-width: 860px) {
+    .xp-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .xp-photo {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--ink-800) 55%, transparent);
+    margin: 0;
+  }
+
+  .duo {
+    position: relative;
+    flex: 1;
+    min-height: 240px;
+  }
+
+  .duo :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.85);
+    transition: filter 0.45s ease;
+  }
+
+  .duo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--acc);
+    mix-blend-mode: color;
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+  }
+
+  .xp-photo:hover .duo :global(img) {
+    filter: none;
+  }
+
+  .xp-photo:hover .duo::after {
+    opacity: 0;
+  }
+
+  .xp-photo figcaption {
+    padding: 0.85rem 1.1rem;
+    border-top: 1px solid var(--line);
+    color: var(--text-low);
+    font-size: 0.6rem;
+  }
+
   .xp {
     border: 1px solid var(--line);
     border-radius: var(--radius);
