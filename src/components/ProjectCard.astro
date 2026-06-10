@@ -51,6 +51,7 @@ const index = `P-${String(num).padStart(2, '0')}`
     </div>
     <span class="mono more" aria-hidden="true">Read more →</span>
   </div>
+  <span class="glow-ring" aria-hidden="true"></span>
 </a>
 
 <style>
@@ -76,7 +77,7 @@ const index = `P-${String(num).padStart(2, '0')}`
     width: 14px;
     height: 14px;
     border: 0 solid var(--acc);
-    opacity: 0;
+    opacity: calc(var(--lit) * 0.85);
     transition: opacity 0.25s ease;
     z-index: 2;
     pointer-events: none;
@@ -107,33 +108,27 @@ const index = `P-${String(num).padStart(2, '0')}`
     opacity: 1;
   }
 
-  /* powered on by the scroll trace passing by: a bright flash that settles
-     into a steady phosphor glow */
-  .card.traced {
-    border-color: rgba(198, 242, 78, 0.45);
-    box-shadow: 0 0 34px -4px var(--acc-glow);
-    background-image: linear-gradient(rgba(198, 242, 78, 0.05), rgba(198, 242, 78, 0.02));
-    animation: power-on 0.9s ease-out;
+  /* powered on by the scroll trace: --lit (0→1, set per-frame from the
+     line's eased head position) drives a glow overlay ring so the
+     highlight fades in with the scroll instead of popping. The ring is
+     pure border + outer halo — it never tints the card surface or images. */
+  .card {
+    --lit: 0;
   }
 
-  @keyframes power-on {
-    0% {
-      border-color: rgba(198, 242, 78, 0.95);
-      box-shadow: 0 0 58px 2px var(--acc-glow);
-    }
+  .glow-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    border: 1px solid rgba(198, 242, 78, 0.55);
+    box-shadow: 0 0 32px -6px var(--acc-glow);
+    opacity: var(--lit);
+    pointer-events: none;
+    z-index: 2;
   }
 
-  .card.traced::before,
-  .card.traced::after {
-    opacity: 0.85;
-  }
-
-  .card.traced .index {
-    text-shadow: 0 0 10px var(--acc-glow);
-  }
-
-  .card.traced:hover {
-    border-color: rgba(198, 242, 78, 0.65);
+  .card .index {
+    text-shadow: 0 0 10px rgba(198, 242, 78, calc(var(--lit) * 0.55));
   }
 
   .media {

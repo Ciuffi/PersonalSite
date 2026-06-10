@@ -187,7 +187,7 @@
     let total = 0
     let nodes: { el: HTMLElement; y: number }[] = []
     let splotches: { el: HTMLElement; y: number }[] = []
-    let traced: { el: HTMLElement; y: number }[] = []
+    let traced: { el: HTMLElement; y: number; heading: boolean; k: number }[] = []
     let built = false
 
     const buildGeometry = () => {
@@ -299,7 +299,7 @@
         { x: C.right - C.w * 0.2, y: gap1, size: 880 },
         { x: (C.left + C.right) / 2, y: gapRow, size: 1100 },
         { x: C.left + C.w * 0.35, y: gapWz, size: 900 },
-        { x: gutXp, y: xpEnter, size: 820 },
+        { x: C.left + C.w * 0.18, y: xpEnter, size: 820 },
         { x: C.left + C.w * 0.55, y: rBtn.cy, size: 840 },
       ]
       for (const spot of splotchSpots) {
@@ -313,11 +313,18 @@
         splotches.push({ el, y: spot.y })
       }
 
-      // elements that power on as the head passes their center
+      // elements that power on as the head passes their center. Headings
+      // toggle a class; everything else gets a continuous --lit (0→1) ramp
+      // so the glow fades in with the scroll instead of popping.
       const targets = [...featured, ...grid, xp, photo, contact, ...headings]
       traced = targets.map((el) => {
         const r = pageRect(el)
-        return { el, y: r.top + r.h * 0.45 }
+        return {
+          el,
+          y: r.top + r.h * 0.45,
+          heading: el.classList.contains('section-heading'),
+          k: -1,
+        }
       })
 
       built = true
@@ -370,7 +377,18 @@
       }
 
       for (const s of splotches) s.el.classList.toggle('on', lightY >= s.y - 2)
-      for (const t of traced) t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
+      for (const t of traced) {
+        if (t.heading) {
+          t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
+          continue
+        }
+        // ramp 0→1 while the head travels a 280px window around the element
+        const k = wide ? Math.max(0, Math.min(1, (lightY - t.y + 140) / 280)) : 0
+        if (Math.abs(k - t.k) > 0.004) {
+          t.el.style.setProperty('--lit', k.toFixed(3))
+          t.k = k
+        }
+      }
     }
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(frame)
@@ -392,7 +410,11 @@
       packet.style.opacity = '0'
       nodes.forEach((n) => n.el.classList.add('lit'))
       splotches.forEach((s) => s.el.classList.add('on'))
-      if (isWide()) traced.forEach((t) => t.el.classList.add('traced'))
+      if (isWide())
+        traced.forEach((t) => {
+          if (t.heading) t.el.classList.add('traced')
+          else t.el.style.setProperty('--lit', '1')
+        })
     }
 
     buildGeometry()
