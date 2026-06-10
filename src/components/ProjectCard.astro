@@ -107,6 +107,25 @@ const index = `P-${String(num).padStart(2, '0')}`
     opacity: 1;
   }
 
+  /* powered on by the scroll trace passing by */
+  .card.traced {
+    border-color: rgba(198, 242, 78, 0.32);
+    box-shadow: 0 0 38px -10px var(--acc-glow);
+  }
+
+  .card.traced::before,
+  .card.traced::after {
+    opacity: 0.75;
+  }
+
+  .card.traced .index {
+    text-shadow: 0 0 10px var(--acc-glow);
+  }
+
+  .card.traced:hover {
+    border-color: rgba(198, 242, 78, 0.55);
+  }
+
   .media {
     overflow: hidden;
     border-bottom: 1px solid var(--line);

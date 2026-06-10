@@ -1,50 +1,36 @@
 ---
-// Decorative "circuit trace" in the left margin of the homepage. A phosphor
-// line draws itself downward in sync with scroll, a glowing packet rides the
-// draw head, and nodes light up as the line passes them. Desktop-only
-// (≥1280px) and static under prefers-reduced-motion.
-const NODES = [
-  { x: 24, y: 80 },
-  { x: 36, y: 225 },
-  { x: 14, y: 385 },
-  { x: 32, y: 555 },
-  { x: 20, y: 725 },
-  { x: 24, y: 905 },
-]
-const PATH = 'M24 0 V150 H36 V300 H14 V470 H32 V640 H20 V810 H24 V1000'
+// "Power line": a phosphor circuit trace that weaves through the homepage
+// layout — built at runtime from the real element positions. As the draw head
+// passes elements they "power on" (.traced), nodes light up at touch points,
+// background splotches bloom, and a glowing packet glides along the path.
+// Line + nodes + card tracing are desktop-only (≥1280px); the ambient
+// splotches run at every width. Static fully-lit under prefers-reduced-motion.
 ---
 
+<div class="splotches" id="trace-splotches" aria-hidden="true"></div>
 <div class="rail" id="scroll-rail" aria-hidden="true">
-  <svg viewBox="0 0 48 1000" preserveAspectRatio="none">
-    <path class="trace base" d={PATH} vector-effect="non-scaling-stroke"></path>
-    <path class="trace glow" d={PATH} vector-effect="non-scaling-stroke"></path>
+  <svg preserveAspectRatio="none">
+    <path class="trace base"></path>
+    <path class="trace glow"></path>
   </svg>
-  {
-    NODES.map((n) => (
-      <span
-        class="node"
-        style={`left: ${(n.x / 48) * 100}%; top: ${n.y / 10}%;`}
-        data-y={n.y}
-      />
-    ))
-  }
   <span class="packet"></span>
 </div>
 
 <style>
-  .rail {
+  .rail,
+  .splotches {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: max(12px, calc((100vw - var(--container)) / 2 - 64px));
-    width: 48px;
+    inset: 0;
     pointer-events: none;
     z-index: 0;
+    overflow: hidden;
   }
 
+  /* visibility (not display): the path must stay measurable for
+     getTotalLength() even when the line is hidden on narrow screens */
   @media (max-width: 1279px) {
     .rail {
-      display: none;
+      visibility: hidden;
     }
   }
 
@@ -67,30 +53,10 @@ const PATH = 'M24 0 V150 H36 V300 H14 V470 H32 V640 H20 V810 H24 V1000'
 
   .glow {
     stroke: var(--acc);
-    stroke-width: 2;
-    opacity: 0.85;
-    filter: drop-shadow(0 0 5px var(--acc-glow));
-    stroke-dasharray: 0 10000;
-  }
-
-  .node {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 1px solid var(--line-strong);
-    background: var(--ink-900);
-    transform: translate(-50%, -50%);
-    transition:
-      background-color 0.3s ease,
-      border-color 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  .node.lit {
-    background: var(--acc);
-    border-color: var(--acc);
-    box-shadow: 0 0 10px var(--acc-glow);
+    stroke-width: 2.25;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px var(--acc-glow)) drop-shadow(0 0 14px rgba(198, 242, 78, 0.18));
+    stroke-dasharray: 0 99999;
   }
 
   .packet {
@@ -101,112 +67,324 @@ const PATH = 'M24 0 V150 H36 V300 H14 V470 H32 V640 H20 V810 H24 V1000'
     height: 9px;
     margin: -4.5px 0 0 -4.5px;
     background: var(--acc);
-    box-shadow: 0 0 12px var(--acc-glow);
+    box-shadow:
+      0 0 12px var(--acc-glow),
+      0 0 28px rgba(198, 242, 78, 0.25);
     opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.trace-node) {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--ink-900);
+    transform: translate(-50%, -50%);
     transition:
-      transform 0.12s linear,
-      opacity 0.3s ease;
+      background-color 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+
+  :global(.trace-node.lit) {
+    background: var(--acc);
+    border-color: var(--acc);
+    box-shadow: 0 0 12px var(--acc-glow);
+  }
+
+  :global(.trace-node.terminal.lit) {
+    animation: pulse-dot 2.2s ease-out infinite;
+  }
+
+  :global(.splotch) {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(198, 242, 78, 0.16) 0%, rgba(198, 242, 78, 0.05) 42%, transparent 68%);
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  :global(.splotch.on) {
+    opacity: 1;
   }
 </style>
 
 <script>
   const rail = document.getElementById('scroll-rail')
-  if (rail) {
+  const splotchBox = document.getElementById('trace-splotches')
+  const page = rail?.parentElement
+
+  if (rail && splotchBox && page) {
     const svg = rail.querySelector('svg') as SVGSVGElement
     const base = rail.querySelector('.base') as SVGPathElement
     const glow = rail.querySelector('.glow') as SVGPathElement
     const packet = rail.querySelector('.packet') as HTMLElement
-    const nodes = [...rail.querySelectorAll<HTMLElement>('.node')]
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isWide = () => matchMedia('(min-width: 1280px)').matches
 
-    // normalized geometry (y in 0–1000); rebuilt in real pixels at runtime so
-    // dash lengths are exact (a stretched viewBox distorts dash patterns)
-    const PTS: [number, number][] = [
-      [24, 0], [24, 150], [36, 150], [36, 300], [14, 300], [14, 470],
-      [32, 470], [32, 640], [20, 640], [20, 810], [24, 810], [24, 1000],
-    ]
-    type Seg = { ax: number; ay: number; by: number; start: number; len: number }
-    let segs: Seg[] = []
+    const $ = (sel: string) => document.querySelector<HTMLElement>(sel)
+    const $$ = (sel: string) => [...document.querySelectorAll<HTMLElement>(sel)]
+
+    // page-coordinate rect helper
+    const pageRect = (el: Element) => {
+      const r = el.getBoundingClientRect()
+      const pr = page.getBoundingClientRect()
+      return {
+        left: r.left - pr.left,
+        right: r.right - pr.left,
+        top: r.top - pr.top,
+        bottom: r.bottom - pr.top,
+        cx: r.left - pr.left + r.width / 2,
+        cy: r.top - pr.top + r.height / 2,
+        w: r.width,
+        h: r.height,
+      }
+    }
+
+    // orthogonal polyline -> rounded-corner SVG path
+    const roundedPath = (raw: { x: number; y: number }[], r = 22) => {
+      // drop consecutive (near-)identical points — degenerate segments divide
+      // by zero (happens e.g. when grid gutters coincide in 1-column layouts)
+      const pts = [raw[0]]
+      for (const p of raw.slice(1)) {
+        const q = pts[pts.length - 1]
+        if (Math.hypot(p.x - q.x, p.y - q.y) > 0.5) pts.push(p)
+      }
+      if (pts.length < 2) return ''
+      let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`
+      for (let i = 1; i < pts.length - 1; i++) {
+        const p = pts[i - 1]
+        const c = pts[i]
+        const n = pts[i + 1]
+        const dIn = Math.hypot(c.x - p.x, c.y - p.y)
+        const dOut = Math.hypot(n.x - c.x, n.y - c.y)
+        const rr = Math.min(r, dIn / 2, dOut / 2)
+        const e1 = { x: c.x + ((p.x - c.x) / dIn) * rr, y: c.y + ((p.y - c.y) / dIn) * rr }
+        const e2 = { x: c.x + ((n.x - c.x) / dOut) * rr, y: c.y + ((n.y - c.y) / dOut) * rr }
+        d += ` L${e1.x.toFixed(1)} ${e1.y.toFixed(1)} Q${c.x.toFixed(1)} ${c.y.toFixed(1)} ${e2.x.toFixed(1)} ${e2.y.toFixed(1)}`
+      }
+      const last = pts[pts.length - 1]
+      d += ` L${last.x.toFixed(1)} ${last.y.toFixed(1)}`
+      return d
+    }
+
+    // ---- state rebuilt on layout changes ----
+    let xs = new Float32Array(0) // sampled path points
+    let ys = new Float32Array(0)
+    let ss = new Float32Array(0) // cumulative length at each sample
     let total = 0
-    let H = 0
+    let nodes: { el: HTMLElement; y: number }[] = []
+    let splotches: { el: HTMLElement; y: number }[] = []
+    let traced: { el: HTMLElement; y: number }[] = []
+    let built = false
 
     const buildGeometry = () => {
-      H = rail.getBoundingClientRect().height
-      if (H <= 0) return
-      const pts = PTS.map(([x, y]) => [x, (y / 1000) * H])
-      svg.setAttribute('viewBox', `0 0 48 ${H}`)
-      const d = `M${pts[0][0]} ${pts[0][1]} ` + pts.slice(1).map(([x, y]) => `L${x} ${Math.round(y * 10) / 10}`).join(' ')
+      built = false
+      nodes.forEach((n) => n.el.remove())
+      splotches.forEach((s) => s.el.remove())
+      nodes = []
+      splotches = []
+      traced = []
+
+      const pr = page.getBoundingClientRect()
+      svg.setAttribute('viewBox', `0 0 ${pr.width} ${pr.height}`)
+
+      const chip = $('.status')
+      const featured = $$('.featured-stack .card')
+      const grid = $$('.grid > .card')
+      const xp = $('.xp')
+      const photo = $('.xp-photo')
+      const contact = $('.contact')
+      const btn = $('.contact .btn-solid')
+      const container = $('#projects > .container')
+      const headings = $$('.section-heading')
+      if (!chip || featured.length < 2 || grid.length < 7 || !xp || !photo || !btn || !container || !contact) return
+
+      const C = pageRect(container)
+      const xL = C.left - 26
+      const xR = C.right + 26
+      const rChip = pageRect(chip)
+      const A = pageRect(featured[0])
+      const B = pageRect(featured[1])
+      const g = grid.map(pageRect)
+      const rXp = pageRect(xp)
+      const rPhoto = pageRect(photo)
+      const rBtn = pageRect(btn)
+
+      const gut1 = (g[0].right + g[1].left) / 2
+      const gut2 = (g[4].right + g[5].left) / 2
+      const gutXp = (rXp.right + rPhoto.left) / 2
+      const gapHero = (rChip.bottom + A.top) / 2
+      const gap1 = (A.bottom + B.top) / 2
+      const gap2 = (B.bottom + g[0].top) / 2
+      const gapRow = (g[0].bottom + g[3].top) / 2
+      const gapWz = (g[3].bottom + g[6].top) / 2
+      const xpEnter = rXp.top - 24
+      const xpExit = rXp.bottom + 26
+
+      const pts = [
+        { x: rChip.cx, y: rChip.bottom + 6 },
+        { x: rChip.cx, y: gapHero },
+        { x: xL, y: gapHero },
+        { x: xL, y: gap1 },
+        { x: xR, y: gap1 }, // full-width sweep between the featured cards
+        { x: xR, y: gap2 },
+        { x: gut1, y: gap2 }, // into the first grid gutter
+        { x: gut1, y: gapRow },
+        { x: gut2, y: gapRow }, // jog to the second gutter
+        { x: gut2, y: gapWz },
+        { x: xL, y: gapWz }, // sweep left above the wide card
+        { x: xL, y: xpEnter },
+        { x: gutXp, y: xpEnter }, // slide between the xp card and the photo
+        { x: gutXp, y: xpExit },
+        { x: xL, y: xpExit },
+        { x: xL, y: rBtn.cy },
+        { x: rBtn.left - 14, y: rBtn.cy }, // terminal at the email button
+      ]
+
+      const d = roundedPath(pts)
       base.setAttribute('d', d)
       glow.setAttribute('d', d)
-      base.removeAttribute('vector-effect')
-      segs = []
-      total = 0
-      for (let i = 1; i < pts.length; i++) {
-        const len = Math.abs(pts[i][0] - pts[i - 1][0]) + Math.abs(pts[i][1] - pts[i - 1][1])
-        segs.push({ ax: pts[i - 1][0], ay: pts[i - 1][1], by: pts[i][1], start: total, len })
-        total += len
+
+      // sample the path once; per-frame work is just table lookups
+      total = glow.getTotalLength()
+      const N = 700
+      xs = new Float32Array(N + 1)
+      ys = new Float32Array(N + 1)
+      ss = new Float32Array(N + 1)
+      for (let i = 0; i <= N; i++) {
+        const s = (i / N) * total
+        const p = glow.getPointAtLength(s)
+        xs[i] = p.x
+        ys[i] = p.y
+        ss[i] = s
       }
+
+      // touch nodes at the points where the line passes each element
+      const nodeSpots = [
+        { x: xL, y: A.cy },
+        { x: xR, y: B.cy },
+        { x: gut1, y: g[0].cy },
+        { x: gut2, y: g[3].cy },
+        { x: xL, y: g[6].cy },
+        { x: gutXp, y: rXp.cy },
+        { x: rBtn.left - 14, y: rBtn.cy, terminal: true },
+      ]
+      for (const spot of nodeSpots) {
+        const el = document.createElement('span')
+        el.className = 'trace-node' + (spot.terminal ? ' terminal' : '')
+        el.style.left = `${spot.x}px`
+        el.style.top = `${spot.y}px`
+        rail.appendChild(el)
+        nodes.push({ el, y: spot.y })
+      }
+
+      // ambient background splotches (all viewport widths)
+      const splotchSpots = [
+        { x: A.left + A.w * 0.3, y: A.cy, size: 860 },
+        { x: B.right - B.w * 0.3, y: B.cy, size: 820 },
+        { x: (C.left + C.right) / 2, y: gapRow, size: 1000 },
+        { x: rPhoto.cx, y: rPhoto.cy, size: 720 },
+        { x: C.left + 220, y: rBtn.cy - 40, size: 780 },
+      ]
+      for (const spot of splotchSpots) {
+        const el = document.createElement('span')
+        el.className = 'splotch'
+        el.style.left = `${spot.x}px`
+        el.style.top = `${spot.y}px`
+        el.style.width = `${spot.size}px`
+        el.style.height = `${spot.size}px`
+        splotchBox.appendChild(el)
+        splotches.push({ el, y: spot.y })
+      }
+
+      // elements that power on as the head passes their center
+      const targets = [...featured, ...grid, xp, photo, contact, ...headings]
+      traced = targets.map((el) => {
+        const r = pageRect(el)
+        return { el, y: r.top + r.h * 0.45 }
+      })
+
+      built = true
     }
 
-    // path length consumed when the draw head sits at pixel height y
-    const lengthAtY = (y: number) => {
-      let s = 0
-      for (const sg of segs) {
-        if (sg.ay === sg.by) {
-          if (y > sg.ay) s = sg.start + sg.len
-          else break
-        } else if (y >= sg.by) {
-          s = sg.start + sg.len
-        } else if (y > sg.ay) {
-          s = sg.start + (y - sg.ay)
-          break
-        } else break
+    // binary search: first sample index with ys[i] >= y
+    const lowerBound = (y: number) => {
+      let lo = 0
+      let hi = ys.length - 1
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1
+        if (ys[mid] < y) lo = mid + 1
+        else hi = mid
       }
-      return s
+      return lo
     }
 
-    const xAtY = (y: number) => {
-      for (const sg of segs) {
-        if (sg.ay !== sg.by && y >= sg.ay && y <= sg.by) return sg.ax
-      }
-      return 24
-    }
+    let sShown = 0
+    let raf = 0
+    const frame = () => {
+      raf = 0
+      if (!built) return
+      const pr = page.getBoundingClientRect()
+      const pageTop = pr.top + window.scrollY
+      let frontier = window.scrollY + window.innerHeight * 0.72 - pageTop
+      // at the very bottom of the document the trace completes fully, so the
+      // terminal node (below the deepest reachable frontier) still lights
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      if (window.scrollY >= maxScroll - 2) frontier = pr.height
 
-    let ticking = false
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const update = () => {
-      ticking = false
-      const r = rail.getBoundingClientRect()
-      if (Math.abs(r.height - H) > 1) buildGeometry()
-      if (reduced) {
-        // inline style: wins over the stylesheet's initial hidden dash state
-        glow.style.strokeDasharray = 'none'
-        nodes.forEach((n) => n.classList.add('lit'))
-        return
+      const wide = isWide()
+      for (const s of splotches) s.el.classList.toggle('on', frontier >= s.y)
+      for (const t of traced) t.el.classList.toggle('traced', wide && frontier >= t.y)
+
+      if (wide) {
+        for (const n of nodes) n.el.classList.toggle('lit', frontier >= n.y - 4)
+        const sTarget = frontier <= ys[0] ? 0 : ss[lowerBound(Math.min(frontier, ys[ys.length - 1]))]
+        sShown += (sTarget - sShown) * 0.16
+        if (Math.abs(sTarget - sShown) < 0.6) sShown = sTarget
+        glow.style.strokeDasharray = `${sShown} ${total + 100}`
+        const i = Math.min(xs.length - 1, Math.round((sShown / total) * (xs.length - 1)))
+        packet.style.transform = `translate(${xs[i]}px, ${ys[i]}px)`
+        packet.style.opacity = sShown > 2 && sShown < total - 2 ? '1' : '0'
+        if (sShown !== sTarget) queue()
       }
-      const railTop = r.top + window.scrollY
-      const anchor = window.scrollY + window.innerHeight * 0.72
-      const p = Math.max(0, Math.min(1, (anchor - railTop) / r.height))
-      const y = p * r.height
-      glow.style.strokeDasharray = `${lengthAtY(y)} ${total + 50}`
-      const px = (xAtY(y) / 48) * r.width
-      packet.style.transform = `translate(${px}px, ${y}px)`
-      packet.style.opacity = p > 0.002 && p < 0.998 ? '1' : '0'
-      for (const n of nodes) n.classList.toggle('lit', y >= (Number(n.dataset.y) / 1000) * r.height)
     }
     const queue = () => {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(update)
-      }
+      if (!raf) raf = requestAnimationFrame(frame)
+    }
+
+    let rebuildTimer = 0
+    const rebuild = () => {
+      clearTimeout(rebuildTimer)
+      rebuildTimer = window.setTimeout(() => {
+        buildGeometry()
+        if (reduced) staticLight()
+        else queue()
+      }, 120)
+    }
+
+    const staticLight = () => {
+      if (!built) return
+      glow.style.strokeDasharray = 'none'
+      packet.style.opacity = '0'
+      nodes.forEach((n) => n.el.classList.add('lit'))
+      splotches.forEach((s) => s.el.classList.add('on'))
+      if (isWide()) traced.forEach((t) => t.el.classList.add('traced'))
     }
 
     buildGeometry()
-    update()
-    if (!reduced) {
+    if (reduced) {
+      staticLight()
+      addEventListener('resize', rebuild, { passive: true })
+    } else {
       addEventListener('scroll', queue, { passive: true })
-      addEventListener('resize', queue, { passive: true })
-      addEventListener('load', queue)
-      new ResizeObserver(queue).observe(rail)
+      addEventListener('resize', rebuild, { passive: true })
+      addEventListener('load', rebuild)
+      new ResizeObserver(rebuild).observe(page)
+      queue()
     }
   }
 </script>

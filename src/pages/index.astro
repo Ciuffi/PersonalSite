@@ -140,6 +140,26 @@ const personLd = JSON.stringify({
     position: relative;
   }
 
+  /* sections paint above the trace/splotch layers (DOM-order stacking) */
+  .page > section {
+    position: relative;
+  }
+
+  /* powered on by the scroll trace */
+  .xp.traced,
+  .xp-photo.traced {
+    border-color: rgba(198, 242, 78, 0.3);
+    box-shadow: 0 0 38px -12px var(--acc-glow);
+  }
+
+  .xp,
+  .xp-photo,
+  .contact {
+    transition:
+      border-color 0.5s ease,
+      box-shadow 0.5s ease;
+  }
+
   /* ---- hero ---- */
   .hero {
     position: relative;
