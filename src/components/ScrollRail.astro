@@ -187,7 +187,14 @@
     let total = 0
     let nodes: { el: HTMLElement; y: number }[] = []
     let splotches: { el: HTMLElement; y: number }[] = []
-    let traced: { el: HTMLElement; y: number; heading: boolean; k: number }[] = []
+    let traced: {
+      el: HTMLElement
+      y: number
+      rampStart: number
+      rampEnd: number
+      heading: boolean
+      k: number
+    }[] = []
     let built = false
 
     const buildGeometry = () => {
@@ -336,6 +343,10 @@
         return {
           el,
           y: r.top + r.h * 0.45,
+          // glow ramps from just above the element's top edge and reaches
+          // full brightness when the head is halfway past it
+          rampStart: r.top - 40,
+          rampEnd: r.top + r.h * 0.5,
           heading: el.classList.contains('section-heading'),
           k: -1,
         }
@@ -396,8 +407,12 @@
           t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
           continue
         }
-        // ramp 0→1 while the head travels a 280px window around the element
-        const k = wide ? Math.max(0, Math.min(1, (lightY - t.y + 140) / 280)) : 0
+        // linear progress through the ramp window, then sqrt-eased so the
+        // glow is perceptible the moment the head reaches the element
+        const lin = wide
+          ? Math.max(0, Math.min(1, (lightY - t.rampStart) / Math.max(1, t.rampEnd - t.rampStart)))
+          : 0
+        const k = Math.sqrt(lin)
         if (Math.abs(k - t.k) > 0.004) {
           t.el.style.setProperty('--lit', k.toFixed(3))
           t.k = k
