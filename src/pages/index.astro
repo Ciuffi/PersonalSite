@@ -148,16 +148,29 @@ const personLd = JSON.stringify({
   /* powered on by the scroll trace */
   .xp.traced,
   .xp-photo.traced {
-    border-color: rgba(198, 242, 78, 0.3);
-    box-shadow: 0 0 38px -12px var(--acc-glow);
+    border-color: rgba(198, 242, 78, 0.42);
+    box-shadow: 0 0 34px -6px var(--acc-glow);
+    animation: xp-power-on 0.9s ease-out;
+  }
+
+  @keyframes xp-power-on {
+    0% {
+      border-color: rgba(198, 242, 78, 0.95);
+      box-shadow: 0 0 58px 2px var(--acc-glow);
+    }
+  }
+
+  .contact.traced .contact-line {
+    text-shadow: 0 0 26px var(--acc-glow);
   }
 
   .xp,
   .xp-photo,
-  .contact {
+  .contact .contact-line {
     transition:
       border-color 0.5s ease,
-      box-shadow 0.5s ease;
+      box-shadow 0.5s ease,
+      text-shadow 0.8s ease;
   }
 
   /* ---- hero ---- */

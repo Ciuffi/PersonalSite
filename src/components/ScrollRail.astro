@@ -27,8 +27,9 @@
   }
 
   /* visibility (not display): the path must stay measurable for
-     getTotalLength() even when the line is hidden on narrow screens */
-  @media (max-width: 1279px) {
+     getTotalLength() even when the line is hidden on narrow screens.
+     1200px is the narrowest width where the margin lanes still fit. */
+  @media (max-width: 1199px) {
     .rail {
       visibility: hidden;
     }
@@ -100,15 +101,23 @@
 
   :global(.splotch) {
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.75);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(198, 242, 78, 0.16) 0%, rgba(198, 242, 78, 0.05) 42%, transparent 68%);
+    background: radial-gradient(
+      circle,
+      rgba(198, 242, 78, 0.23) 0%,
+      rgba(198, 242, 78, 0.08) 45%,
+      transparent 72%
+    );
     opacity: 0;
-    transition: opacity 1.4s ease;
+    transition:
+      opacity 0.9s ease,
+      transform 1.3s cubic-bezier(0.2, 0.6, 0.2, 1);
   }
 
   :global(.splotch.on) {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 </style>
 
@@ -123,7 +132,7 @@
     const glow = rail.querySelector('.glow') as SVGPathElement
     const packet = rail.querySelector('.packet') as HTMLElement
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isWide = () => matchMedia('(min-width: 1280px)').matches
+    const isWide = () => matchMedia('(min-width: 1200px)').matches
 
     const $ = (sel: string) => document.querySelector<HTMLElement>(sel)
     const $$ = (sel: string) => [...document.querySelectorAll<HTMLElement>(sel)]
@@ -282,13 +291,16 @@
         nodes.push({ el, y: spot.y })
       }
 
-      // ambient background splotches (all viewport widths)
+      // ambient background splotches — centered in the OPEN bands the line
+      // sweeps through (gaps and margins), never behind a card where the
+      // bright core would be occluded
       const splotchSpots = [
-        { x: A.left + A.w * 0.3, y: A.cy, size: 860 },
-        { x: B.right - B.w * 0.3, y: B.cy, size: 820 },
-        { x: (C.left + C.right) / 2, y: gapRow, size: 1000 },
-        { x: rPhoto.cx, y: rPhoto.cy, size: 720 },
-        { x: C.left + 220, y: rBtn.cy - 40, size: 780 },
+        { x: C.left + C.w * 0.25, y: gapHero, size: 920 },
+        { x: C.right - C.w * 0.2, y: gap1, size: 880 },
+        { x: (C.left + C.right) / 2, y: gapRow, size: 1100 },
+        { x: C.left + C.w * 0.35, y: gapWz, size: 900 },
+        { x: gutXp, y: xpEnter, size: 820 },
+        { x: C.left + C.w * 0.55, y: rBtn.cy, size: 840 },
       ]
       for (const spot of splotchSpots) {
         const el = document.createElement('span')
@@ -337,11 +349,10 @@
       if (window.scrollY >= maxScroll - 2) frontier = pr.height
 
       const wide = isWide()
-      for (const s of splotches) s.el.classList.toggle('on', frontier >= s.y)
-      for (const t of traced) t.el.classList.toggle('traced', wide && frontier >= t.y)
+      // narrow screens have no line: light from the scroll frontier instead
+      let lightY = frontier
 
       if (wide) {
-        for (const n of nodes) n.el.classList.toggle('lit', frontier >= n.y - 4)
         const sTarget = frontier <= ys[0] ? 0 : ss[lowerBound(Math.min(frontier, ys[ys.length - 1]))]
         sShown += (sTarget - sShown) * 0.16
         if (Math.abs(sTarget - sShown) < 0.6) sShown = sTarget
@@ -349,8 +360,17 @@
         const i = Math.min(xs.length - 1, Math.round((sShown / total) * (xs.length - 1)))
         packet.style.transform = `translate(${xs[i]}px, ${ys[i]}px)`
         packet.style.opacity = sShown > 2 && sShown < total - 2 ? '1' : '0'
+        // things light when the visible draw head reaches them, so the
+        // power-on cascade trails the line as it eases along the path
+        lightY = ys[i]
+        for (const n of nodes) n.el.classList.toggle('lit', lightY >= n.y - 4)
         if (sShown !== sTarget) queue()
+      } else {
+        packet.style.opacity = '0'
       }
+
+      for (const s of splotches) s.el.classList.toggle('on', lightY >= s.y - 2)
+      for (const t of traced) t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
     }
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(frame)

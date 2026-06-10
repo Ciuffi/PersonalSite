@@ -107,15 +107,25 @@ const index = `P-${String(num).padStart(2, '0')}`
     opacity: 1;
   }
 
-  /* powered on by the scroll trace passing by */
+  /* powered on by the scroll trace passing by: a bright flash that settles
+     into a steady phosphor glow */
   .card.traced {
-    border-color: rgba(198, 242, 78, 0.32);
-    box-shadow: 0 0 38px -10px var(--acc-glow);
+    border-color: rgba(198, 242, 78, 0.45);
+    box-shadow: 0 0 34px -4px var(--acc-glow);
+    background-image: linear-gradient(rgba(198, 242, 78, 0.05), rgba(198, 242, 78, 0.02));
+    animation: power-on 0.9s ease-out;
+  }
+
+  @keyframes power-on {
+    0% {
+      border-color: rgba(198, 242, 78, 0.95);
+      box-shadow: 0 0 58px 2px var(--acc-glow);
+    }
   }
 
   .card.traced::before,
   .card.traced::after {
-    opacity: 0.75;
+    opacity: 0.85;
   }
 
   .card.traced .index {
@@ -123,7 +133,7 @@ const index = `P-${String(num).padStart(2, '0')}`
   }
 
   .card.traced:hover {
-    border-color: rgba(198, 242, 78, 0.55);
+    border-color: rgba(198, 242, 78, 0.65);
   }
 
   .media {
