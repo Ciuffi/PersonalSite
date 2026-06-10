@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Giulio Rossi — Resume</title>
+<meta name="author" content="Giulio Rossi">
+<style>
+  :root {
+    --ink: #1b1b1b;
+    --mute: #5c5c5c;
+    --faint: #8c8c8c;
+    --line: #e4e4e4;
+    --accent: #4a7c1c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page { size: letter; margin: 0; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    width: 8.5in;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11.2px;
+    line-height: 1.48;
+    color: var(--ink);
+    background: #ffffff;
+    border-top: 5px solid var(--accent);
+    padding: 42px 62px 24px;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Header ---------- */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h1 {
+    font-size: 33px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+  }
+
+  .tagline {
+    margin-top: 7px;
+    font-size: 12.5px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .tagline .sep { color: var(--accent); font-weight: 700; padding: 0 4px; }
+  .tagline .loc { color: var(--mute); font-weight: 400; }
+
+  .contact {
+    text-align: right;
+    font-size: 10.6px;
+    line-height: 1.75;
+    color: var(--mute);
+  }
+
+  /* ---------- Sections ---------- */
+  section { margin-top: 18px; }
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 9px;
+  }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .summary { font-size: 11.6px; line-height: 1.55; max-width: 7in; }
+
+  /* ---------- Entries ---------- */
+  article { margin-bottom: 11px; }
+  article:last-child { margin-bottom: 0; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  h3 { font-size: 12px; font-weight: 700; }
+  h3 .co { font-weight: 700; }
+  h3 .dash { color: var(--faint); font-weight: 400; padding: 0 2px; }
+  h3 .tech { font-weight: 400; color: var(--mute); font-size: 10.6px; }
+
+  .when {
+    font-size: 10.2px;
+    color: var(--mute);
+    white-space: nowrap;
+  }
+  .when .loc { color: var(--faint); }
+
+  ul { margin-top: 5px; padding-left: 15px; list-style: none; }
+  li { position: relative; margin-bottom: 3px; padding-left: 1px; }
+  li::before {
+    content: "•";
+    position: absolute;
+    left: -14px;
+    color: var(--accent);
+  }
+
+  .desc { margin-top: 3px; color: var(--ink); max-width: 7.05in; }
+
+  /* ---------- Skills ---------- */
+  .skill-row { display: flex; margin-bottom: 5.5px; }
+  .skill-row dt {
+    flex: 0 0 118px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .skill-row dd { color: var(--ink); }
+</style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Giulio Rossi</h1>
+      <p class="tagline">Software Engineer<span class="sep">·</span><span class="loc">Vancouver, BC</span></p>
+    </div>
+    <div class="contact">
+      <div><a href="mailto:ciuffi9@mac.com">ciuffi9@mac.com</a></div>
+      <div><a href="https://www.ciuffi.dev">www.ciuffi.dev</a></div>
+      <div><a href="https://github.com/ciuffi">github.com/ciuffi</a></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <p class="summary">Software engineer at Amazon with a track record of shipping end-to-end — from large-scale backend services to iOS apps, multiplayer games, and AI-powered tools. CS + Cognitive Systems background from UBC.</p>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <article>
+      <div class="row">
+        <h3>Software Engineer<span class="dash">—</span><span class="co">Amazon</span></h3>
+        <span class="when"><span class="loc">Vancouver, BC&nbsp;&nbsp;·&nbsp;&nbsp;</span>Jul 2021 – Present</span>
+      </div>
+      <ul>
+        <li>Design, build, and operate distributed backend services on AWS, owning features from design through production.</li>
+        <li>Hold on-call ownership of production systems, resolving incidents and improving monitoring, alarms, and runbooks.</li>
+        <li>Scope and deliver cross-team initiatives with partner teams and stakeholders, from design review to rollout.</li>
+      </ul>
+    </article>
+
+    <article>
+      <div class="row">
+        <h3>Software Engineer Intern<span class="dash">—</span><span class="co">AbCellera</span></h3>
+        <span class="when"><span class="loc">Vancouver, BC&nbsp;&nbsp;·&nbsp;&nbsp;</span>Jul 2018 – Dec 2018</span>
+      </div>
+      <ul>
+        <li>Designed a database managing thousands of biological-data entries per day (SQL).</li>
+        <li>Built a data portal for scientists and bioinformaticians around complex business requirements (React, Django).</li>
+        <li>Created a cloud DevOps platform (AWS, Jenkins) and employed AWS KMS for platform security.</li>
+      </ul>
+    </article>
+
+    <article>
+      <div class="row">
+        <h3>Software Engineer Intern<span class="dash">—</span><span class="co">Ensemble</span></h3>
+        <span class="when"><span class="loc">Richmond, BC&nbsp;&nbsp;·&nbsp;&nbsp;</span>Summers 2016 &amp; 2017</span>
+      </div>
+      <ul>
+        <li>Spearheaded self-initiated productivity tooling, including a browser plugin that integrated the company's internal task-management system with Jira (Java, JavaScript).</li>
+      </ul>
+    </article>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+
+    <article>
+      <div class="row">
+        <h3>Tackle for Brainrots <span class="tech">· Luau, Rojo</span></h3>
+        <span class="when">2026</span>
+      </div>
+      <p class="desc">Multiplayer PvP collection game for Roblox — ~20,000 lines of typed Luau across 96 modules; server-authoritative architecture with validated actions and DataStore session locking; 12-tier progression, raidable bases, and procedural animation.</p>
+    </article>
+
+    <article>
+      <div class="row">
+        <h3>DnD Tracker <span class="tech">· TypeScript, React, Fastify, DynamoDB, AWS CDK</span></h3>
+        <span class="when">2026</span>
+      </div>
+      <p class="desc">Self-hostable D&amp;D campaign manager — real-time multiplayer sync over WebSockets, JWT auth, a stat-formula DSL, and a Claude‑powered DM assistant via MCP tools with permission-gated actions and audit logging.</p>
+    </article>
+
+    <article>
+      <div class="row">
+        <h3>Plug Adblocker <span class="tech">· Swift, Apple Content Blocking framework</span></h3>
+        <span class="when">2019</span>
+      </div>
+      <p class="desc">iOS content blocker taken from idea to App Store release.</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Leadership &amp; Research</h2>
+
+    <article>
+      <div class="row">
+        <h3>Development Director<span class="dash">—</span><span class="co">nwPlus</span> <span class="tech">· UBC hackathon club · React, Vue, Swift, Java</span></h3>
+        <span class="when">Sep 2018 – 2021</span>
+      </div>
+      <p class="desc">Led a 6-developer team building event sites and an NFC registration system for hackathons hosting 1,200+ students annually.</p>
+    </article>
+
+    <article>
+      <div class="row">
+        <h3>Research Assistant<span class="dash">—</span><span class="co">UBC HCI Lab</span> <span class="tech">· Dr. Dongwook Yoon</span></h3>
+        <span class="when">Sep 2019 – 2021</span>
+      </div>
+      <p class="desc">Led front-end development of an educational file-management research tool.</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <article>
+      <div class="row">
+        <h3>University of British Columbia</h3>
+        <span class="when">Graduated May 2021</span>
+      </div>
+      <p class="desc">B.A., Computer Science &amp; Cognitive Systems (Integrated Arts)</p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <dl>
+      <div class="skill-row"><dt>Languages</dt><dd>TypeScript, JavaScript, Swift, Luau/Lua, Java, Python, SQL, C#</dd></div>
+      <div class="skill-row"><dt>Frameworks</dt><dd>React, Node.js, Fastify, Django, Astro, Unity, Expo/React Native</dd></div>
+      <div class="skill-row"><dt>Cloud &amp; Infra</dt><dd>AWS (DynamoDB, ECS/Fargate, CDK, KMS), Docker, CI/CD, GitHub Actions, Jenkins</dd></div>
+    </dl>
+  </section>
+
+</body>
+</html>

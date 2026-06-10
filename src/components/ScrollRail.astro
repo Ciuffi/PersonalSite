@@ -223,6 +223,17 @@
       const rPhoto = pageRect(photo)
       const rBtn = pageRect(btn)
 
+      // the trace grows out of the hero fractal's root when present
+      const fractal = $('#hero-fractal')
+      let p0 = { x: rChip.cx, y: rChip.top - 30 }
+      if (fractal && getComputedStyle(fractal).display !== 'none') {
+        const fr = pageRect(fractal)
+        p0 = {
+          x: fr.left + fr.w * Number(fractal.dataset.rootX || 0.06),
+          y: fr.top + fr.h * Number(fractal.dataset.rootY || 0.98),
+        }
+      }
+
       const gut1 = (g[0].right + g[1].left) / 2
       const gut2 = (g[4].right + g[5].left) / 2
       const gutXp = (rXp.right + rPhoto.left) / 2
@@ -235,8 +246,10 @@
       const xpExit = rXp.bottom + 26
 
       const pts = [
-        { x: rChip.cx, y: rChip.bottom + 6 },
-        { x: rChip.cx, y: gapHero },
+        p0,
+        { x: p0.x, y: rChip.cy },
+        { x: rChip.right + 14, y: rChip.cy }, // tap the status chip on the way
+        { x: rChip.right + 14, y: gapHero },
         { x: xL, y: gapHero },
         { x: xL, y: gap1 },
         { x: xR, y: gap1 }, // full-width sweep between the featured cards
@@ -274,6 +287,7 @@
 
       // touch nodes at the points where the line passes each element
       const nodeSpots = [
+        { x: rChip.right + 14, y: rChip.cy },
         { x: xL, y: A.cy },
         { x: xR, y: B.cy },
         { x: gut1, y: g[0].cy },

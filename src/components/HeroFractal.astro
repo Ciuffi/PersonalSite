@@ -1,0 +1,174 @@
+---
+// Generative phosphor dendrite for the hero — a 45°-quantized branching
+// fractal (in the spirit of VLSI clock-distribution trees) grown
+// deterministically at build time. Branches draw in on load, staggered by
+// depth. The root drops a stub to the bottom edge of the box; ScrollRail
+// reads the data-root-* fractions and starts the page trace exactly there,
+// so the whole circuit reads as one connected system.
+
+type Seg = { x1: number; y1: number; x2: number; y2: number; d: number }
+
+const W = 700
+const H = 520
+const ROOT = { x: 70, y: 470 }
+const MAX_DEPTH = 7
+
+const segs: Seg[] = []
+const tips: { x: number; y: number }[] = []
+
+function grow(x: number, y: number, ang: number, len: number, depth: number): void {
+  if (depth > MAX_DEPTH || len < 7) {
+    tips.push({ x, y })
+  } else {
+    const a = Math.round(ang / 45) * 45
+    // up-left growth (135°) only for the small deep branches, so the canopy
+    // never spreads left into the hero text column
+    const maxAngle = depth >= 3 ? 135 : 90
+    if (a >= 0 && a <= maxAngle) {
+      // deterministic organic wiggle so siblings don't decay identically
+      const wiggle = 0.95 + 0.1 * Math.sin(depth * 3.7 + x * 0.013)
+      const rad = (a * Math.PI) / 180
+      const x2 = +(x + Math.cos(rad) * len * wiggle).toFixed(1)
+      const y2 = +(y - Math.sin(rad) * len * wiggle).toFixed(1)
+      segs.push({ x1: x, y1: y, x2, y2, d: depth })
+      grow(x2, y2, a - 45, len * 0.74, depth + 1)
+      grow(x2, y2, a + 45, len * 0.68, depth + 1)
+      if (depth >= 1) grow(x2, y2, a, len * 0.58, depth + 1)
+    }
+  }
+}
+
+grow(ROOT.x, ROOT.y, 45, 120, 0)
+
+const STUB_END = { x: ROOT.x, y: 514 }
+const rootX = (STUB_END.x / W).toFixed(4)
+const rootY = (STUB_END.y / H).toFixed(4)
+
+const width = (d: number) => +(3 * Math.pow(0.8, d)).toFixed(2)
+const alpha = (d: number) => +Math.max(0.16, 0.95 - d * 0.11).toFixed(2)
+const trunk = segs.filter((s) => s.d < 3)
+---
+
+<div class="fractal" id="hero-fractal" aria-hidden="true" data-root-x={rootX} data-root-y={rootY}>
+  <svg viewBox={`0 0 ${W} ${H}`} fill="none">
+    <!-- glow underlay for the trunk -->
+    <g class="trunk-glow">
+      {
+        trunk.map((s) => (
+          <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke-width={width(s.d) + 2} />
+        ))
+      }
+    </g>
+    <!-- branches -->
+    {
+      segs.map((s) => (
+        <line
+          class="branch"
+          x1={s.x1}
+          y1={s.y1}
+          x2={s.x2}
+          y2={s.y2}
+          stroke-width={width(s.d)}
+          stroke-opacity={alpha(s.d)}
+          pathLength="1"
+          style={`--d: ${s.d}`}
+        />
+      ))
+    }
+    <!-- root stub down to the trace connection point -->
+    <line
+      class="branch stub"
+      x1={ROOT.x}
+      y1={ROOT.y}
+      x2={STUB_END.x}
+      y2={STUB_END.y}
+      stroke-width="2.4"
+      stroke-opacity="0.95"
+      pathLength="1"
+      style="--d: 0"
+    />
+    <!-- branch tips -->
+    <g class="tips">
+      {tips.map((t) => <circle cx={t.x} cy={t.y} r="1.7" />)}
+    </g>
+    <!-- root node -->
+    <circle class="root-node" cx={ROOT.x} cy={ROOT.y} r="4.5" />
+  </svg>
+</div>
+
+<style>
+  .fractal {
+    position: absolute;
+    top: 4.25rem;
+    right: clamp(1rem, 4vw, 5rem);
+    width: clamp(420px, 40vw, 660px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* shown only when the scroll trace exists to grow out of it (same gate
+     as ScrollRail) — at narrower widths the canopy collides with the text */
+  @media (max-width: 1199px) {
+    .fractal {
+      display: none;
+    }
+  }
+
+  .fractal svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .branch {
+    stroke: var(--acc);
+    stroke-linecap: round;
+  }
+
+  .trunk-glow line {
+    stroke: var(--acc);
+    stroke-opacity: 0.16;
+    stroke-linecap: round;
+    filter: blur(5px);
+  }
+
+  .tips circle {
+    fill: var(--acc);
+    fill-opacity: 0.4;
+  }
+
+  .root-node {
+    fill: var(--acc);
+    filter: drop-shadow(0 0 7px var(--acc-glow));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .branch {
+      stroke-dasharray: 1 1;
+      stroke-dashoffset: 1;
+      animation: fract-draw 0.55s ease-out forwards;
+      animation-delay: calc(var(--d) * 140ms + 250ms);
+    }
+
+    .tips circle {
+      opacity: 0;
+      animation: fract-tip 0.6s ease-out forwards;
+      animation-delay: 1.35s;
+    }
+
+    .root-node {
+      animation: pulse-dot 2.2s ease-out infinite;
+    }
+
+    @keyframes fract-draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fract-tip {
+      to {
+        opacity: 1;
+      }
+    }
+  }
+</style>

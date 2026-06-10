@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import SectionHeading from '../components/SectionHeading.astro'
 import ProjectCard from '../components/ProjectCard.astro'
 import ScrollRail from '../components/ScrollRail.astro'
+import HeroFractal from '../components/HeroFractal.astro'
 import hackathon from '../assets/hackathon.jpg'
 
 const projects = (await getCollection('projects')).sort(
@@ -36,6 +37,7 @@ const personLd = JSON.stringify({
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
     <div class="hero-bg" aria-hidden="true"></div>
+    <HeroFractal />
     <div class="container">
       <p class="mono kicker load-rise" style="--rise-delay: 0.05s">
         <span class="slashes">//</span> Software engineer & builder
@@ -49,6 +51,9 @@ const personLd = JSON.stringify({
       <div class="cta-row load-rise" style="--rise-delay: 0.35s">
         <a class="btn btn-solid" href="#projects">View projects ↓</a>
         <a class="btn btn-ghost" href="#contact">Get in touch</a>
+        <a class="btn btn-ghost" href="/giulio-rossi-resume.pdf" target="_blank" rel="noopener">
+          Resume ↗
+        </a>
       </div>
       <a class="status load-rise" href="/projects/tackle-for-brainrots/" style="--rise-delay: 0.45s">
         <span class="dot" aria-hidden="true"></span>
