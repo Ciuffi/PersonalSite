@@ -3,8 +3,9 @@
 // layout — built at runtime from the real element positions. As the draw head
 // passes elements they "power on" (.traced), nodes light up at touch points,
 // background splotches bloom, and a glowing packet glides along the path.
-// Line + nodes + card tracing are desktop-only (≥1280px); the ambient
-// splotches run at every width. Static fully-lit under prefers-reduced-motion.
+// Line + nodes are desktop-only (≥1200px); the splotches and the power-on
+// glow run at every width — narrow screens light from the scroll frontier.
+// Static fully-lit under prefers-reduced-motion.
 ---
 
 <div class="splotches" id="trace-splotches" aria-hidden="true"></div>
@@ -403,14 +404,15 @@
       }
       for (const t of traced) {
         if (t.heading) {
-          t.el.classList.toggle('traced', wide && lightY >= t.y - 2)
+          t.el.classList.toggle('traced', lightY >= t.y - 2)
           continue
         }
         // linear progress through the ramp window, then sqrt-eased so the
         // glow is perceptible the moment the head reaches the element
-        const lin = wide
-          ? Math.max(0, Math.min(1, (lightY - t.rampStart) / Math.max(1, t.rampEnd - t.rampStart)))
-          : 0
+        const lin = Math.max(
+          0,
+          Math.min(1, (lightY - t.rampStart) / Math.max(1, t.rampEnd - t.rampStart))
+        )
         const k = Math.sqrt(lin)
         if (Math.abs(k - t.k) > 0.004) {
           t.el.style.setProperty('--lit', k.toFixed(3))
@@ -441,11 +443,10 @@
         s.el.style.opacity = '1'
         s.el.style.transform = 'translate(-50%, -50%) scale(1)'
       })
-      if (isWide())
-        traced.forEach((t) => {
-          if (t.heading) t.el.classList.add('traced')
-          else t.el.style.setProperty('--lit', '1')
-        })
+      traced.forEach((t) => {
+        if (t.heading) t.el.classList.add('traced')
+        else t.el.style.setProperty('--lit', '1')
+      })
     }
 
     buildGeometry()

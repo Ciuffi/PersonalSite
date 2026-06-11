@@ -1,6 +1,6 @@
 ---
 title: Tackle for Brainrots
-description: A multiplayer Roblox PvP collection game, live on Roblox — football meets Pokémon meets base raiding. ~20,000 lines of server-authoritative Luau across 96 modules.
+description: A multiplayer PvP collection game, live on Roblox — football meets Pokémon meets base raiding. ~20,000 lines of server-authoritative Luau across 96 modules.
 year: "2026"
 tags: [Roblox, Luau, Rojo, Game Design]
 cover: ../../assets/projects/tackle-brainrots.png
