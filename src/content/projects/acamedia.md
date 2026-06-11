@@ -10,10 +10,10 @@ links:
 order: 8
 ---
 
-AcaMedIa is a Vue.js web app geared toward undergraduate and graduate science students
-looking to learn more about current medical research papers and the flourishing
-scientific laboratories conducting the research. It was built at XdHacks, a 24-hour
-hackathon, and it taught me a lot about Vue and web development in general.
+AcaMedIa is a Vue.js web app that helps undergraduate and graduate science students
+discover current medical research papers and the labs conducting the research. It was
+built at XdHacks, a 24-hour hackathon, and it taught me a lot about Vue and web
+development in general.
 
 Built with:
 

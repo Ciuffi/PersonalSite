@@ -2,54 +2,75 @@
 // Generative phosphor dendrite for the hero — a 45°-quantized branching
 // fractal (in the spirit of VLSI clock-distribution trees) grown
 // deterministically at build time. Branches draw in on load, staggered by
-// depth. The root drops a stub to the bottom edge of the box; ScrollRail
-// reads the data-root-* fractions and starts the page trace exactly there,
-// so the whole circuit reads as one connected system.
+// depth. Two trees are grown: a full-size canopy for wide screens whose root
+// drops a stub to the bottom edge of the box (ScrollRail reads the
+// data-root-* fractions and starts the page trace exactly there, so the
+// whole circuit reads as one connected system), and a smaller, fainter
+// canopy for narrow screens where the trace doesn't run.
 
 type Seg = { x1: number; y1: number; x2: number; y2: number; d: number }
+type Pt = { x: number; y: number }
 
+function growTree(root: Pt, startLen: number, maxDepth: number) {
+  const segs: Seg[] = []
+  const tips: Pt[] = []
+
+  function grow(x: number, y: number, ang: number, len: number, depth: number): void {
+    if (depth > maxDepth || len < 7) {
+      tips.push({ x, y })
+    } else {
+      const a = Math.round(ang / 45) * 45
+      // up-left growth (135°) only for the small deep branches, so the canopy
+      // never spreads left into the hero text column
+      const maxAngle = depth >= 3 ? 135 : 90
+      if (a >= 0 && a <= maxAngle) {
+        // deterministic organic wiggle so siblings don't decay identically
+        const wiggle = 0.95 + 0.1 * Math.sin(depth * 3.7 + x * 0.013)
+        const rad = (a * Math.PI) / 180
+        const x2 = +(x + Math.cos(rad) * len * wiggle).toFixed(1)
+        const y2 = +(y - Math.sin(rad) * len * wiggle).toFixed(1)
+        segs.push({ x1: x, y1: y, x2, y2, d: depth })
+        grow(x2, y2, a - 45, len * 0.74, depth + 1)
+        grow(x2, y2, a + 45, len * 0.68, depth + 1)
+        if (depth >= 1) grow(x2, y2, a, len * 0.58, depth + 1)
+      }
+    }
+  }
+
+  grow(root.x, root.y, 45, startLen, 0)
+  return { segs, tips }
+}
+
+const width = (d: number) => +(3 * Math.pow(0.8, d)).toFixed(2)
+const alpha = (d: number) => +Math.max(0.16, 0.95 - d * 0.11).toFixed(2)
+
+// desktop canopy
 const W = 700
 const H = 520
 const ROOT = { x: 70, y: 470 }
-const MAX_DEPTH = 7
-
-const segs: Seg[] = []
-const tips: { x: number; y: number }[] = []
-
-function grow(x: number, y: number, ang: number, len: number, depth: number): void {
-  if (depth > MAX_DEPTH || len < 7) {
-    tips.push({ x, y })
-  } else {
-    const a = Math.round(ang / 45) * 45
-    // up-left growth (135°) only for the small deep branches, so the canopy
-    // never spreads left into the hero text column
-    const maxAngle = depth >= 3 ? 135 : 90
-    if (a >= 0 && a <= maxAngle) {
-      // deterministic organic wiggle so siblings don't decay identically
-      const wiggle = 0.95 + 0.1 * Math.sin(depth * 3.7 + x * 0.013)
-      const rad = (a * Math.PI) / 180
-      const x2 = +(x + Math.cos(rad) * len * wiggle).toFixed(1)
-      const y2 = +(y - Math.sin(rad) * len * wiggle).toFixed(1)
-      segs.push({ x1: x, y1: y, x2, y2, d: depth })
-      grow(x2, y2, a - 45, len * 0.74, depth + 1)
-      grow(x2, y2, a + 45, len * 0.68, depth + 1)
-      if (depth >= 1) grow(x2, y2, a, len * 0.58, depth + 1)
-    }
-  }
-}
-
-grow(ROOT.x, ROOT.y, 45, 120, 0)
+const { segs, tips } = growTree(ROOT, 120, 7)
+const trunk = segs.filter((s) => s.d < 3)
 
 const STUB_END = { x: ROOT.x, y: 514 }
 const rootX = (STUB_END.x / W).toFixed(4)
 const rootY = (STUB_END.y / H).toFixed(4)
 
-const width = (d: number) => +(3 * Math.pow(0.8, d)).toFixed(2)
-const alpha = (d: number) => +Math.max(0.16, 0.95 - d * 0.11).toFixed(2)
-const trunk = segs.filter((s) => s.d < 3)
+// mobile canopy — shallower and shorter so it stays a quiet backdrop
+// (viewBox is sized to hug the grown tree so it renders at full scale)
+const MW = 250
+const MH = 240
+const MROOT = { x: 36, y: 212 }
+const { segs: mSegs, tips: mTips } = growTree(MROOT, 78, 5)
+const mTrunk = mSegs.filter((s) => s.d < 3)
 ---
 
-<div class="fractal" id="hero-fractal" aria-hidden="true" data-root-x={rootX} data-root-y={rootY}>
+<div
+  class="fractal desktop"
+  id="hero-fractal"
+  aria-hidden="true"
+  data-root-x={rootX}
+  data-root-y={rootY}
+>
   <svg viewBox={`0 0 ${W} ${H}`} fill="none">
     <!-- glow underlay for the trunk -->
     <g class="trunk-glow">
@@ -96,21 +117,68 @@ const trunk = segs.filter((s) => s.d < 3)
   </svg>
 </div>
 
+<div class="fractal mobile" aria-hidden="true">
+  <svg viewBox={`0 0 ${MW} ${MH}`} fill="none">
+    <g class="trunk-glow">
+      {
+        mTrunk.map((s) => (
+          <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke-width={width(s.d) + 2} />
+        ))
+      }
+    </g>
+    {
+      mSegs.map((s) => (
+        <line
+          class="branch"
+          x1={s.x1}
+          y1={s.y1}
+          x2={s.x2}
+          y2={s.y2}
+          stroke-width={width(s.d)}
+          stroke-opacity={alpha(s.d)}
+          pathLength="1"
+          style={`--d: ${s.d}`}
+        />
+      ))
+    }
+    <g class="tips">
+      {mTips.map((t) => <circle cx={t.x} cy={t.y} r="1.6" />)}
+    </g>
+    <circle class="root-node" cx={MROOT.x} cy={MROOT.y} r="3.5" />
+  </svg>
+</div>
+
 <style>
   .fractal {
     position: absolute;
-    top: 4.25rem;
-    right: clamp(1rem, 4vw, 5rem);
-    width: clamp(420px, 40vw, 660px);
     pointer-events: none;
     z-index: 0;
   }
 
-  /* shown only when the scroll trace exists to grow out of it (same gate
-     as ScrollRail) — at narrower widths the canopy collides with the text */
+  .fractal.desktop {
+    top: 4.25rem;
+    right: clamp(1rem, 4vw, 5rem);
+    width: clamp(420px, 40vw, 660px);
+  }
+
+  /* the full canopy is shown only when the scroll trace exists to grow out
+     of it (same gate as ScrollRail) — at narrower widths the small canopy
+     takes over, faded back so it reads as texture behind the hero text */
+  .fractal.mobile {
+    display: none;
+    top: 3.75rem;
+    right: clamp(0.75rem, 4vw, 2.5rem);
+    width: clamp(190px, 50vw, 320px);
+    opacity: 0.5;
+  }
+
   @media (max-width: 1199px) {
-    .fractal {
+    .fractal.desktop {
       display: none;
+    }
+
+    .fractal.mobile {
+      display: block;
     }
   }
 
