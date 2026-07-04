@@ -10,9 +10,10 @@ interface Props {
 }
 
 const { project, num, variant = 'grid', delay = 0 } = Astro.props
-const { title, description, year, tags, cover, coverAlt } = project.data
+const { title, description, year, tags, cover, coverAlt, links } = project.data
 const href = `/projects/${project.id}/`
 const index = `P-${String(num).padStart(2, '0')}`
+const isLive = Boolean(links?.live)
 ---
 
 <a
@@ -35,6 +36,12 @@ const index = `P-${String(num).padStart(2, '0')}`
           }
           loading={variant === 'featured' ? 'eager' : 'lazy'}
         />
+        {isLive && (
+          <span class="badge">
+            <span class="badge-dot" aria-hidden="true" />
+            Live
+          </span>
+        )}
       </div>
     )
   }
@@ -59,15 +66,15 @@ const index = `P-${String(num).padStart(2, '0')}`
     position: relative;
     display: flex;
     flex-direction: column;
-    background: color-mix(in srgb, var(--ink-800) 72%, transparent);
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--r-lg);
     overflow: hidden;
     text-decoration: none;
     transition:
-      transform 0.25s ease,
-      border-color 0.25s ease,
-      box-shadow 0.25s ease;
+      transform var(--dur-mid) ease,
+      border-color var(--dur-mid) ease,
+      box-shadow var(--dur-mid) ease;
   }
 
   .card::before,
@@ -98,9 +105,9 @@ const index = `P-${String(num).padStart(2, '0')}`
   }
 
   .card:hover {
-    transform: translateY(-4px);
+    transform: var(--lift-hover);
     border-color: var(--line-strong);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    box-shadow: var(--shadow-card-hover);
   }
 
   .card:hover::before,
@@ -119,9 +126,9 @@ const index = `P-${String(num).padStart(2, '0')}`
   .glow-ring {
     position: absolute;
     inset: 0;
-    border-radius: var(--radius);
+    border-radius: var(--r-lg);
     border: 1px solid rgba(198, 242, 78, 0.55);
-    box-shadow: 0 0 32px -6px var(--acc-glow);
+    box-shadow: var(--glow-ring);
     opacity: var(--lit);
     pointer-events: none;
     z-index: 2;
@@ -132,10 +139,47 @@ const index = `P-${String(num).padStart(2, '0')}`
   }
 
   .media {
+    position: relative;
     overflow: hidden;
     border-bottom: 1px solid var(--line);
     aspect-ratio: 16 / 10;
     background: var(--ink-900);
+  }
+
+  /* "powered on" live badge — shown for projects with a live/playable link */
+  .badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.4em 0.7em;
+    border-radius: var(--r-sm);
+    background: color-mix(in srgb, var(--ink-950) 70%, transparent);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--acc-2);
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--acc);
+    flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .badge-dot {
+      animation: pulse-dot 2.2s ease-out infinite;
+    }
   }
 
   .media :global(img) {
@@ -212,6 +256,11 @@ const index = `P-${String(num).padStart(2, '0')}`
   .featured {
     flex-direction: row;
     min-height: 340px;
+    border-radius: var(--r-xl);
+  }
+
+  .featured .glow-ring {
+    border-radius: var(--r-xl);
   }
 
   .featured .media {

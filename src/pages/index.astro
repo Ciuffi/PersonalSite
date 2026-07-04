@@ -39,26 +39,57 @@ const personLd = JSON.stringify({
     <div class="hero-bg" aria-hidden="true"></div>
     <HeroFractal />
     <div class="container">
-      <p class="mono kicker load-rise" style="--rise-delay: 0.05s">
-        <span class="slashes">//</span> Software engineer & builder
-      </p>
-      <h1 class="load-rise" style="--rise-delay: 0.15s">Giulio&nbsp;Rossi</h1>
-      <p class="lede load-rise" style="--rise-delay: 0.25s">
-        By day I build software at Amazon. The rest of the time I ship things for
-        fun — a multiplayer Roblox game, iOS apps, an Apple&nbsp;Watch game, and
-        AI-powered tools for my D&amp;D table.
-      </p>
-      <div class="cta-row load-rise" style="--rise-delay: 0.35s">
-        <a class="btn btn-solid" href="#projects">View projects ↓</a>
-        <a class="btn btn-ghost" href="#contact">Get in touch</a>
-        <a class="btn btn-ghost" href="/giulio-rossi-resume.pdf" target="_blank" rel="noopener">
-          Resume ↗
-        </a>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="mono kicker load-rise" style="--rise-delay: 0.05s">
+            <span class="slashes">//</span> Software engineer & builder
+          </p>
+          <h1 class="load-rise" style="--rise-delay: 0.15s">Giulio Rossi</h1>
+          <p class="lede load-rise" style="--rise-delay: 0.25s">
+            By day I build software at Amazon. The rest of the time I ship things for
+            fun — a multiplayer Roblox game, iOS apps, an Apple&nbsp;Watch game, and
+            AI-powered tools for my D&amp;D table.
+          </p>
+          <div class="cta-row load-rise" style="--rise-delay: 0.35s">
+            <a class="btn btn-solid" href="#projects">View projects ↓</a>
+            <a class="btn btn-ghost" href="#contact">Get in touch</a>
+            <a class="btn btn-ghost" href="/giulio-rossi-resume.pdf" target="_blank" rel="noopener">
+              Resume ↗
+            </a>
+          </div>
+          <a class="status load-rise" href="/projects/tackle-for-brainrots/" style="--rise-delay: 0.45s">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="mono">Just launched: Tackle for Brainrots</span>
+          </a>
+        </div>
+
+        <aside class="spec load-rise" style="--rise-delay: 0.4s" aria-label="Build log">
+          <div class="spec-bar">
+            <span class="spec-light r" aria-hidden="true"></span>
+            <span class="spec-light y" aria-hidden="true"></span>
+            <span class="spec-light g" aria-hidden="true"></span>
+            <span class="spec-cap">~/giulio · build_log</span>
+          </div>
+          <dl class="spec-rows">
+            <div class="spec-row">
+              <dt class="spec-k">Role</dt>
+              <dd class="spec-v">SWE @ Amazon</dd>
+            </div>
+            <div class="spec-row">
+              <dt class="spec-k">Shipping since</dt>
+              <dd class="spec-v">2018</dd>
+            </div>
+            <div class="spec-row">
+              <dt class="spec-k">Latest</dt>
+              <dd class="spec-v acc">Tackle for Brainrots</dd>
+            </div>
+            <div class="spec-row">
+              <dt class="spec-k">Stack</dt>
+              <dd class="spec-v stack">Java · Swift · TS · React</dd>
+            </div>
+          </dl>
+        </aside>
       </div>
-      <a class="status load-rise" href="/projects/tackle-for-brainrots/" style="--rise-delay: 0.45s">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="mono">Just launched: Tackle for Brainrots</span>
-      </a>
     </div>
   </section>
 
@@ -169,9 +200,9 @@ const personLd = JSON.stringify({
   .xp-photo .glow-ring {
     position: absolute;
     inset: 0;
-    border-radius: var(--radius);
+    border-radius: var(--r-lg);
     border: 1px solid rgba(198, 242, 78, 0.5);
-    box-shadow: 0 0 32px -6px var(--acc-glow);
+    box-shadow: var(--glow-ring);
     opacity: var(--lit);
     pointer-events: none;
     z-index: 2;
@@ -210,6 +241,126 @@ const personLd = JSON.stringify({
 
   .hero .container {
     position: relative;
+  }
+
+  /* two-column hero: copy on the left, build_log spec panel on the right */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  /* frosted terminal "build_log" panel — floats over the fractal */
+  .spec {
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    backdrop-filter: var(--blur-panel);
+    -webkit-backdrop-filter: var(--blur-panel);
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
+  }
+
+  .spec-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .spec-light {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    opacity: 0.85;
+  }
+
+  .spec-light.r {
+    background: #ff5f57;
+  }
+
+  .spec-light.y {
+    background: #febc2e;
+  }
+
+  .spec-light.g {
+    background: var(--acc);
+  }
+
+  .spec-cap {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--text-low);
+  }
+
+  .spec-rows {
+    margin: 0;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 1.05rem;
+    margin-bottom: 1.05rem;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .spec-row:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  .spec-k {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-low);
+  }
+
+  .spec-v {
+    margin: 0;
+    text-align: right;
+    color: var(--text-hi);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .spec-v.acc {
+    color: var(--acc-2);
+  }
+
+  .spec-v.stack {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--text-mid);
   }
 
   .kicker {
@@ -322,9 +473,9 @@ const personLd = JSON.stringify({
     display: flex;
     flex-direction: column;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--r-lg);
     overflow: hidden;
-    background: color-mix(in srgb, var(--ink-800) 55%, transparent);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
     margin: 0;
   }
 
@@ -375,9 +526,9 @@ const personLd = JSON.stringify({
 
   .xp {
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--r-lg);
     padding: clamp(1.6rem, 4vw, 2.6rem);
-    background: color-mix(in srgb, var(--ink-800) 55%, transparent);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
   }
 
   .xp-row {
@@ -446,7 +597,30 @@ const personLd = JSON.stringify({
 
   /* ---- contact ---- */
   .contact {
+    position: relative;
+    overflow: hidden;
     text-align: left;
+    border: 1px solid var(--line);
+    border-radius: var(--r-2xl);
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    padding: clamp(2rem, 5vw, 3.4rem);
+  }
+
+  /* soft accent bloom across the top of the panel; brightens as the
+     scroll trace powers the section on (--lit) */
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, var(--acc-soft), transparent 60%);
+    opacity: calc(0.55 + var(--lit) * 0.45);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .contact > * {
+    position: relative;
+    z-index: 1;
   }
 
   .contact-line {

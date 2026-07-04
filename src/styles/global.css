@@ -5,29 +5,91 @@
    ============================================================ */
 
 :root {
-  /* palette */
-  --ink-950: #0a0c0a;
+  /* ============ surfaces ============ */
+  --bg: #0a0c0a;
+  --surface: #141812;
+  --surface-2: #1c211a;
+  /* legacy aliases — existing component CSS still references these names */
+  --ink-950: var(--bg);
   --ink-900: #0e110d;
-  --ink-800: #141812;
-  --ink-700: #1c211a;
+  --ink-800: var(--surface);
+  --ink-700: var(--surface-2);
+
+  /* ============ hairlines ============ */
   --line: rgba(238, 242, 230, 0.1);
   --line-strong: rgba(238, 242, 230, 0.22);
-  --text-hi: #eef2e6;
-  --text-mid: #a9b1a0;
-  --text-low: #6f7766;
+
+  /* ============ text ============ */
+  --hi: #eef2e6;
+  --mid: #a9b1a0;
+  --low: #6f7766;
+  --text-hi: var(--hi);
+  --text-mid: var(--mid);
+  --text-low: var(--low);
+
+  /* ============ accent — phosphor lime ============ */
   --acc: #c6f24e;
+  --acc-2: #c6f24e; /* accent-on-surface (== --acc on dark, darkens on light) */
+  --acc-ink: #0a0c0a; /* ink on top of a filled accent */
   --acc-soft: rgba(198, 242, 78, 0.14);
   --acc-glow: rgba(198, 242, 78, 0.35);
 
-  /* type */
+  /* ============ type ============ */
   --font-display: 'Bricolage Grotesque Variable', 'Avenir Next', sans-serif;
   --font-body: 'Instrument Sans Variable', 'Helvetica Neue', sans-serif;
   --font-mono: 'Martian Mono Variable', 'Menlo', monospace;
+  --fw-body: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-display: 700;
+  --text-hero: clamp(3rem, 8.5vw, 6.5rem);
+  --text-h1: clamp(2.4rem, 7vw, 4.2rem);
+  --text-h2: clamp(1.9rem, 4.5vw, 2.7rem);
+  --text-h3: clamp(1.5rem, 3vw, 2.1rem);
+  --text-lead: clamp(1.05rem, 2vw, 1.3rem);
+  --text-body: 1.0625rem;
+  --text-sm: 0.9rem;
+  --text-mono: 0.68rem;
+  --tracking-mono: 0.14em;
+  --tracking-eyebrow: 0.22em;
+  --leading-tight: 0.95;
+  --leading-snug: 1.05;
+  --leading-body: 1.7;
 
-  /* layout */
-  --container: 1120px;
+  /* ============ layout & radii ============ */
+  --page-max: 1160px;
+  --read-max: 900px;
+  --container: var(--page-max); /* legacy alias */
   --pad-x: clamp(1.25rem, 5vw, 2.5rem);
-  --radius: 8px;
+  --gutter: var(--pad-x);
+  --section-y: clamp(3rem, 7vh, 5rem);
+  --hero-y: clamp(3.5rem, 9vh, 7rem);
+  --gap-grid: 1.4rem;
+  --gap-inline: 0.5rem;
+  --r-xs: 5px; /* tags */
+  --r-sm: 6px; /* small chips / badges */
+  --r-md: 8px; /* buttons */
+  --r-lg: 12px; /* grid cards, panels */
+  --r-xl: 14px; /* featured cards */
+  --r-2xl: 16px; /* contact panel */
+  --radius: var(--r-md); /* legacy alias (8px) */
+  --header-h: 66px;
+
+  /* ============ effects — glow, shadow, motion ============ */
+  --shadow-card: 0 16px 44px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 22px 60px rgba(0, 0, 0, 0.5);
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.4);
+  --glow-btn: 0 10px 34px var(--acc-glow);
+  --glow-ring: 0 0 32px -6px var(--acc-glow);
+  --glow-node: 0 0 12px var(--acc-glow);
+  --glow-text: 0 0 10px var(--acc-glow);
+  --blur-panel: blur(5px) saturate(1.05);
+  --blur-header: blur(12px);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s;
+  --dur-mid: 0.25s;
+  --lift-hover: translateY(-4px); /* cards */
+  --lift-btn: translateY(-2px); /* buttons */
 }
 
 /* ---------- reset ---------- */
@@ -102,6 +164,11 @@ a {
   padding-inline: var(--pad-x);
 }
 
+/* narrower measure for long-form reading (project detail articles) */
+.container.narrow {
+  max-width: var(--read-max);
+}
+
 .mono {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -136,32 +203,33 @@ a {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
-  padding: 0.95em 1.6em;
+  gap: 0.55em;
+  padding: 0.95em 1.7em;
   font-family: var(--font-mono);
   font-size: 0.74rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  border-radius: var(--radius);
+  border-radius: var(--r-md);
   border: 1px solid transparent;
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease,
-    background-color 0.18s ease;
+    transform var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    background-color var(--dur-fast) ease;
 }
 
 .btn-solid {
   background: var(--acc);
-  color: var(--ink-950);
+  color: var(--acc-ink);
+  border-color: var(--acc);
 }
 
 .btn-solid:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 30px var(--acc-glow);
+  transform: var(--lift-btn);
+  box-shadow: var(--glow-btn);
 }
 
 .btn-ghost {
@@ -171,20 +239,20 @@ a {
 
 .btn-ghost:hover {
   border-color: var(--acc);
-  color: var(--acc);
-  transform: translateY(-2px);
+  color: var(--acc-2);
+  transform: var(--lift-btn);
 }
 
 /* ---------- chips / tags ---------- */
 .chip {
   display: inline-block;
-  padding: 0.45em 0.8em;
+  padding: 0.4em 0.75em;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: var(--r-xs);
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 450;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-mid);
   white-space: nowrap;
